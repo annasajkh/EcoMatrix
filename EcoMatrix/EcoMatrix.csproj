@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="OpenTK" Version="4.7.7" />
+		<PackageReference Include="StbImageSharp" Version="2.27.13" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="bin\Debug\net6.0\shaders\fragment.frag" />
+		<None Include="bin\Debug\net6.0\shaders\fragmentWithTexture.frag" />
+		<None Include="bin\Debug\net6.0\shaders\vertex.vert" />
+		<None Include="bin\Debug\net6.0\shaders\vertexWithTexture.vert" />
+	</ItemGroup>
+
+</Project>
