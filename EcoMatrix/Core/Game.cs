@@ -18,7 +18,6 @@ namespace EcoMatrix.Core
     public class Game : GameWindow
     {
         private Player player;
-        private Chunk chunk;
         private Renderer renderer;
         private Vector3 lightPosition;
 
@@ -34,11 +33,13 @@ namespace EcoMatrix.Core
             new Indices(1, 2, 3)
         };
 
-        private Texture2D texture;
+        private Texture2D sunTexture;
+        private Texture2D grassTexture;
 
         private float time;
 
         private Mesh sun;
+        private Mesh terrain;
 
         public Game(string title, int width, int height)
                 : base(GameWindowSettings.Default,
@@ -56,6 +57,7 @@ namespace EcoMatrix.Core
             Global.windowHeight = height;
 
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
 
             //GL.Enable(EnableCap.Blend);
             //GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
@@ -82,18 +84,18 @@ namespace EcoMatrix.Core
 
 
             // Initialization
-            texture = new Texture2D(Global.grassImage);
-            texture.Bind();
+            sunTexture = new Texture2D(Global.catImage);
+            grassTexture = new Texture2D(Global.grassImage);
 
-
-            player = new Player(position: new Vector3(1000, 1000, 1000),
-                    rotation: Vector3.Zero,
-                    scale: Vector3.One,
-                    cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
+            player = new Player(position: new Vector3(0, 1000, 0),
+                                rotation: Vector3.Zero,
+                                scale: Vector3.One,
+                                cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
 
             lightPosition = new Vector3(0, 100, 0);
 
             sun = new Mesh(Vector3.Zero, Vector3.Zero, new Vector3(15, 1, 15));
+            terrain = new Mesh(Vector3.Zero, Vector3.Zero, Vector3.One);
 
             Helpers.ApplyNormals(vertices, triangleIndices, sun.ModelMatrix);
 
@@ -101,7 +103,21 @@ namespace EcoMatrix.Core
             sun.Vertices = Builders.VerticesBuilder(vertices);
             sun.Indices = Builders.IndicesBuilder(triangleIndices);
 
-            chunk = new Chunk(0, 0);
+            WorldGenerator.GenerateAroundPlayer(player.Position.X, player.Position.Z, terrain.ModelMatrix);
+
+            List<Vertex[]> terrainVertices = new List<Vertex[]>();
+            List<Indices[]> terrainIndices = new List<Indices[]>();
+
+            for (int i = 0; i < Global.chunks.Count; i++)
+            {
+                terrainVertices.Add(Global.chunks[i].Vertices);
+                terrainIndices.Add(Global.chunks[i].Indices);
+            }
+
+            (terrain.Vertices, terrain.Indices) = Builders.BuildAll(terrainVertices, terrainIndices);
+
+            Console.WriteLine(terrain.Vertices.Length / Global.AllShaderAttributeSize);
+            Console.WriteLine(terrain.Indices[terrain.Indices.Length - 1]);
         }
 
         protected override void OnLoad()
@@ -127,7 +143,7 @@ namespace EcoMatrix.Core
             base.OnUnload();
 
             renderer.Dispose();
-            chunk.Dispose();
+            terrain.Dispose();
             sun.Dispose();
         }
 
@@ -164,7 +180,7 @@ namespace EcoMatrix.Core
 
             sun.Rotation = new Vector3(0, -90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(time), MathHelper.Sin(time))));
 
-            time += (float)frameEventArgs.Time * 0.1f;
+            time += (float)frameEventArgs.Time * 0.5f;
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
@@ -176,11 +192,11 @@ namespace EcoMatrix.Core
 
             renderer.Begin();
 
-            texture.ChangeTexture(Global.catImage);
+            sunTexture.Bind();
             renderer.Draw(sun);
 
-            texture.ChangeTexture(Global.grassImage);
-            renderer.Draw(chunk.Mesh);
+            grassTexture.Bind();
+            renderer.Draw(terrain);
 
             renderer.End();
 

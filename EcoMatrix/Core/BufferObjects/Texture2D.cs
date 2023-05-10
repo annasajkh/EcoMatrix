@@ -10,13 +10,6 @@ namespace EcoMatrix.Core.BufferObjects
         {
             Handle = GL.GenTexture();
 
-            ChangeTexture(textureImage);
-
-            GL.BindTexture(TextureTarget.Texture2D, 0);
-        }
-
-        public void ChangeTexture(ImageResult textureImage)
-        {
             GL.BindTexture(TextureTarget.Texture2D, Handle);
 
             GL.TexImage2D(target: TextureTarget.Texture2D,
@@ -30,6 +23,8 @@ namespace EcoMatrix.Core.BufferObjects
                           pixels: textureImage.Data);
 
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
         }
 
         public override void Bind()

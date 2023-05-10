@@ -1,12 +1,11 @@
 using EcoMatrix.Core.Utils;
+using OpenTK.Mathematics;
 
 namespace EcoMatrix.Core.WorldGeneration
 {
-    public class WorldGenerator
+    public static class WorldGenerator
     {
-        private static List<string> chunkIDs = new List<string>(Global.renderDistance * Global.renderDistance);
-
-        public WorldGenerator(float x, float z)
+        public static void GenerateAroundPlayer(float x, float z, Matrix4 modelMatrix)
         {
             float centerX = Helpers.Snap(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
             float centerZ = Helpers.Snap(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
@@ -15,12 +14,11 @@ namespace EcoMatrix.Core.WorldGeneration
             {
                 for (int j = 0; j < Global.renderDistance; j++)
                 {
-                    Chunk chunk = new Chunk(centerX + j * Global.chunkFullSize, centerZ + i * Global.chunkFullSize);
+                    Chunk chunk = new Chunk(centerX + j * Global.chunkFullSize, centerZ + i * Global.chunkFullSize, modelMatrix);
 
                     Global.chunks.Add(chunk);
-                    chunkIDs.Add(chunk.ID);
+                    Global.chunkIDs.Add(chunk.ID);
                 }
-
             }
 
             Global.worldCenterX = x;

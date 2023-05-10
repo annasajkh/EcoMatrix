@@ -16,5 +16,10 @@ namespace EcoMatrix.Core.Containers
             Normal = normal;
             TextureCoordinates = textureCoordinates;
         }
+
+        public override string ToString()
+        {
+            return $"Position: [{Position.X}, {Position.Y}, {Position.Z}]\nColor: [{Color.R}, {Color.G}, {Color.B}, {Color.A}]\nNormal: [{Normal.X}, {Normal.Y}, {Normal.Z}]\nTextureCoordinates: [{TextureCoordinates.X}, {TextureCoordinates.Y}]";
+        }
     }
 }

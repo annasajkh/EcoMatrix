@@ -1,4 +1,3 @@
-using EcoMatrix.Core.Components;
 using EcoMatrix.Core.Containers;
 using EcoMatrix.Core.Shapes;
 using EcoMatrix.Core.Utils;
@@ -9,22 +8,35 @@ namespace EcoMatrix.Core.WorldGeneration
     public class Chunk
     {
         private Rectangle[,] rectangles;
-        public Mesh Mesh { get; private set; }
+
+        public float X { get; private set; }
+        public float Z { get; private set; }
+
+        public Vertex[] Vertices { get; private set; }
+        public Indices[] Indices { get; private set; }
+
 
         public string ID
         {
             get
             {
-                return $"{Mesh.Position.X}, {Mesh.Position.Z}";
+                return $"{X}, {Z}";
             }
         }
 
 
-        public Chunk(float x, float z)
+        public Chunk(float x, float z, Matrix4 modelMatrix)
         {
+            X = x;
+            Z = z;
+
             rectangles = new Rectangle[Global.chunkSize, Global.chunkSize];
 
+            (Vertices, Indices) = GenerateChunk(x, z, modelMatrix);
+        }
 
+        private Tuple<Vertex[], Indices[]> GenerateChunk(float x, float z, Matrix4 modelMatrix)
+        {
             uint index = 0;
 
             for (int i = 0; i < rectangles.GetLength(0); i++)
@@ -80,16 +92,7 @@ namespace EcoMatrix.Core.WorldGeneration
                         new Indices(1 + index * 4, 2 + index * 4, 3 + index * 4)
                     };
 
-
-
                     rectangles[i, j] = new Rectangle(vertexTopRight, vertexBottomRight, vertexBottomLeft, vertexTopLeft, indices);
-
-                    //Console.WriteLine($"{rectangles[i, j].VertexTopRight.Position}");
-                    //Console.WriteLine($"{rectangles[i, j].VertexBottomRight.Position}");
-                    //Console.WriteLine($"{rectangles[i, j].VertexBottomLeft.Position}");
-                    //Console.WriteLine($"{rectangles[i, j].VertexTopLeft.Position}");
-
-                    //Console.WriteLine();
 
                     index++;
                 }
@@ -98,12 +101,9 @@ namespace EcoMatrix.Core.WorldGeneration
             Vertex[] verticesMerged = MergeVertices(rectangles);
             Indices[] indicesMerged = MergeIndices(rectangles);
 
-            Mesh = new Mesh(new Vector3(x, 0, z), Vector3.Zero, Vector3.One);
+            Helpers.ApplyNormals(verticesMerged, indicesMerged, modelMatrix);
 
-            Helpers.ApplyNormals(verticesMerged, indicesMerged, Mesh.ModelMatrix);
-
-            Mesh.Vertices = Builders.VerticesBuilder(verticesMerged);
-            Mesh.Indices = Builders.IndicesBuilder(indicesMerged);
+            return Tuple.Create(verticesMerged, indicesMerged);
         }
 
         private Vertex[] MergeVertices(Rectangle[,] rectangles)
@@ -157,17 +157,6 @@ namespace EcoMatrix.Core.WorldGeneration
             }
 
             return indices;
-        }
-
-        public void Dispose()
-        {
-            Mesh.Dispose();
-            GC.SuppressFinalize(this);
-        }
-
-        ~Chunk()
-        {
-            Dispose();
         }
     }
 }

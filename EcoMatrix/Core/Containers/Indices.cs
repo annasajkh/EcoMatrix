@@ -13,6 +13,11 @@ namespace EcoMatrix.Core.Containers
             ThirdIndex = thirdIndex;
         }
 
+        public override string ToString()
+        {
+            return $"Indices: [{FirstIndex}, {SecondIndex}, {ThirdIndex}]";
+        }
+
         public static Indices operator +(Indices indicesA, Indices indicesB)
         {
             return new Indices(indicesA.FirstIndex + indicesB.FirstIndex,

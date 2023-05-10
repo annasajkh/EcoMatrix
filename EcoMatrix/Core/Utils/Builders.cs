@@ -16,7 +16,7 @@ namespace EcoMatrix.Core.Utils
 
             for (int i = 0; i < allIndices.Count; i++)
             {
-                indicesResult.AddRange(IndicesBuilder(allIndices[i]));
+                indicesResult.AddRange(IndicesBuilder(allIndices[i], (uint)(verticesResult.Count / Global.AllShaderAttributeSize / allVertices.Count * i)));
             }
 
             return Tuple.Create(verticesResult.ToArray(), indicesResult.ToArray());
@@ -54,7 +54,8 @@ namespace EcoMatrix.Core.Utils
 
         }
 
-        public static uint[] IndicesBuilder(Indices[] indices)
+        // offset is for offsetting the indices
+        public static uint[] IndicesBuilder(Indices[] indices, uint offset = 0)
         {
             uint[] indicesResult = new uint[3 * indices.Length];
 
@@ -62,9 +63,9 @@ namespace EcoMatrix.Core.Utils
 
             for (int i = 0; i < indicesResult.Length; i += 3)
             {
-                indicesResult[i] = indices[index].FirstIndex;
-                indicesResult[i + 1] = indices[index].SecondIndex;
-                indicesResult[i + 2] = indices[index].ThirdIndex;
+                indicesResult[i] = indices[index].FirstIndex + offset;
+                indicesResult[i + 1] = indices[index].SecondIndex + offset;
+                indicesResult[i + 2] = indices[index].ThirdIndex + offset;
 
                 index++;
             }

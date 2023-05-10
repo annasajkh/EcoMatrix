@@ -25,8 +25,8 @@ namespace EcoMatrix.Core.Entities
                                   direction: Vector3.Normalize(new Vector3(0, 0, 0) - position),
                                   size: cameraSize,
                                   fov: 45,
-                                  near: 0.01f,
-                                  far: 100000f);
+                                  near: 0.1f,
+                                  far: 10000f);
         }
 
         public void GetInput(KeyboardState keyboardState, MouseState mouseState, float delta)
