@@ -1,4 +1,7 @@
+using EcoMatrix.Core.Containers;
+using EcoMatrix.Core.Entities;
 using EcoMatrix.Core.WorldGeneration;
+using OpenTK.Mathematics;
 using StbImageSharp;
 
 namespace EcoMatrix.Core.Utils
@@ -8,11 +11,11 @@ namespace EcoMatrix.Core.Utils
         public static int windowWidth;
         public static int windowHeight;
 
-        public static int chunkSize = 50;
-        public static float chunkResolution = 30;
+        public static int chunkSize = 30;
+        public static float chunkResolution = 50;
         public static float chunkFullSize = chunkSize * chunkResolution;
 
-        public static int renderDistance = 5;
+        public static int renderDistance = 7;
 
         public static int worldNoiseOctaves = 3;
         public static float worldNoiseLacunarity = 2f;
@@ -35,12 +38,21 @@ namespace EcoMatrix.Core.Utils
                                                             NormalAttributeSize +
                                                             TextureCoordinatesAttributeSize;
 
+        public static Vector3 playerSpawnPosition = new Vector3(0, 1000, 0);
 
-        public static List<Chunk> chunks = new List<Chunk>(Global.renderDistance * Global.renderDistance);
-        public static List<string> chunkIDs = new List<string>(Global.renderDistance * Global.renderDistance);
+        public static float regenerateTriggerDistance2 = (chunkFullSize * renderDistance * 0.25f) *
+                                                         (chunkFullSize * renderDistance * 0.25f);
+
+
+        public static List<Chunk> chunks = new List<Chunk>(renderDistance * renderDistance);
+        public static List<string> chunkIDs = new List<string>(renderDistance * renderDistance);
+        public static List<Vertex[]> builderTerrainVertices = new List<Vertex[]>();
+        public static List<Indices[]> builderTerrainIndices = new List<Indices[]>();
 
         public static ImageResult grassImage = ImageResult.FromStream(File.OpenRead("textures/grass.png"), ColorComponents.RedGreenBlueAlpha);
         public static ImageResult catImage = ImageResult.FromStream(File.OpenRead("textures/cat.png"), ColorComponents.RedGreenBlueAlpha);
         public static ImageResult sunImage = ImageResult.FromStream(File.OpenRead("textures/sun.png"), ColorComponents.RedGreenBlueAlpha);
+
+        public static Player player;
     }
 }

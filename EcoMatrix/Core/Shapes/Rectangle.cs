@@ -25,5 +25,15 @@ namespace EcoMatrix.Core.Shapes
             VertexTopLeft = vertexTopLeft;
             Indices = indices;
         }
+
+
+        public void UpdateRectangle(Vertex vertexTopRight, Vertex vertexBottomRight, Vertex vertexBottomLeft, Vertex vertexTopLeft, Indices[] indices)
+        {
+            VertexTopRight = vertexTopRight;
+            VertexBottomRight = vertexBottomRight;
+            VertexBottomLeft = vertexBottomLeft;
+            VertexTopLeft = vertexTopLeft;
+            Indices = indices;
+        }
     }
 }

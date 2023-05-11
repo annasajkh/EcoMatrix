@@ -17,6 +17,14 @@ namespace EcoMatrix.Core.Containers
             TextureCoordinates = textureCoordinates;
         }
 
+        public void UpdateVertex(Vector3 position, Color4 color, Vector3 normal, Vector2 textureCoordinates)
+        {
+            Position = position;
+            Color = color;
+            Normal = normal;
+            TextureCoordinates = textureCoordinates;
+        }
+
         public override string ToString()
         {
             return $"Position: [{Position.X}, {Position.Y}, {Position.Z}]\nColor: [{Color.R}, {Color.G}, {Color.B}, {Color.A}]\nNormal: [{Normal.X}, {Normal.Y}, {Normal.Z}]\nTextureCoordinates: [{TextureCoordinates.X}, {TextureCoordinates.Y}]";

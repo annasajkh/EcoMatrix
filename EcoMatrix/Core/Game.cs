@@ -17,7 +17,6 @@ namespace EcoMatrix.Core
 {
     public class Game : GameWindow
     {
-        private Player player;
         private Renderer renderer;
         private Vector3 lightPosition;
 
@@ -50,7 +49,6 @@ namespace EcoMatrix.Core
                         })
         {
             // Settings
-            CursorState = CursorState.Grabbed;
             CenterWindow();
 
             Global.windowWidth = width;
@@ -81,16 +79,14 @@ namespace EcoMatrix.Core
             renderer.Shader.Unuse();
 
 
-
-
             // Initialization
             sunTexture = new Texture2D(Global.catImage);
             grassTexture = new Texture2D(Global.grassImage);
 
-            player = new Player(position: new Vector3(0, 1000, 0),
-                                rotation: Vector3.Zero,
-                                scale: Vector3.One,
-                                cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
+            Global.player = new Player(position: Global.playerSpawnPosition,
+                                       rotation: Vector3.Zero,
+                                       scale: Vector3.One,
+                                       cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
 
             lightPosition = new Vector3(0, 100, 0);
 
@@ -103,21 +99,7 @@ namespace EcoMatrix.Core
             sun.Vertices = Builders.VerticesBuilder(vertices);
             sun.Indices = Builders.IndicesBuilder(triangleIndices);
 
-            WorldGenerator.GenerateAroundPlayer(player.Position.X, player.Position.Z, terrain.ModelMatrix);
-
-            List<Vertex[]> terrainVertices = new List<Vertex[]>();
-            List<Indices[]> terrainIndices = new List<Indices[]>();
-
-            for (int i = 0; i < Global.chunks.Count; i++)
-            {
-                terrainVertices.Add(Global.chunks[i].Vertices);
-                terrainIndices.Add(Global.chunks[i].Indices);
-            }
-
-            (terrain.Vertices, terrain.Indices) = Builders.BuildAll(terrainVertices, terrainIndices);
-
-            Console.WriteLine(terrain.Vertices.Length / Global.AllShaderAttributeSize);
-            Console.WriteLine(terrain.Indices[terrain.Indices.Length - 1]);
+            (terrain.Vertices, terrain.Indices) = WorldGenerator.GenerateAroundPlayer(Global.player.Position.X, Global.player.Position.Z);
         }
 
         protected override void OnLoad()
@@ -134,8 +116,8 @@ namespace EcoMatrix.Core
 
             GL.Viewport(0, 0, resizeEventArgs.Width, resizeEventArgs.Height);
 
-            player.Camera.Resize(resizeEventArgs.Width, resizeEventArgs.Height);
-            renderer.Projection = player.Camera.ProjectionMatrix;
+            Global.player.Camera.Resize(resizeEventArgs.Width, resizeEventArgs.Height);
+            renderer.Projection = Global.player.Camera.ProjectionMatrix;
         }
 
         protected override void OnUnload()
@@ -159,28 +141,42 @@ namespace EcoMatrix.Core
                 Close();
             }
 
+            if (Vector2.DistanceSquared(new Vector2(Global.player.Position.X, Global.player.Position.Z),
+                                        new Vector2(Global.worldCenterX, Global.worldCenterZ)) > Global.regenerateTriggerDistance2)
+            {
+                (terrain.Vertices, terrain.Indices) = WorldGenerator.UpdateAroundPlayer(Global.player.Position.X, Global.player.Position.Z);
+            }
 
-            player.Update(KeyboardState, MouseState, (float)frameEventArgs.Time);
+            Global.player.Update(KeyboardState, MouseState, (float)frameEventArgs.Time);
 
             Helpers.ApplyNormals(vertices, triangleIndices, sun.ModelMatrix);
 
             sun.Vertices = Builders.VerticesBuilder(vertices);
             sun.Indices = Builders.IndicesBuilder(triangleIndices);
 
-            renderer.View = player.Camera.ViewMatrix;
+            renderer.View = Global.player.Camera.ViewMatrix;
 
             renderer.Shader.Use();
-            GL.Uniform3(renderer.Shader.GetUniformLocation("uViewPos"), player.Position);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("uViewPos"), Global.player.Position);
             GL.Uniform3(renderer.Shader.GetUniformLocation("uLightPos"), lightPosition);
             renderer.Shader.Unuse();
 
-            lightPosition = player.Position + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 10000;
+            lightPosition = Global.player.Position + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 10000;
 
             sun.Position = lightPosition - new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 100;
 
             sun.Rotation = new Vector3(0, -90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(time), MathHelper.Sin(time))));
 
-            time += (float)frameEventArgs.Time * 0.5f;
+            //time += (float)frameEventArgs.Time * 0.3f;
+
+            if (keyboardState.IsKeyDown(Keys.P))
+            {
+                CursorState = CursorState.Normal;
+            }
+            else
+            {
+                CursorState = CursorState.Grabbed;
+            }
         }
 
         protected override void OnRenderFrame(FrameEventArgs args)
