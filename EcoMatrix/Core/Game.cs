@@ -1,3 +1,4 @@
+using EcoMatrix.Core.ArrayObjects;
 using EcoMatrix.Core.BufferObjects;
 using EcoMatrix.Core.Components;
 using EcoMatrix.Core.Containers;
@@ -40,6 +41,9 @@ namespace EcoMatrix.Core
         private Mesh sun;
         private Mesh terrain;
 
+        public Player player;
+        public VertexArrayObject vertexArrayObject;
+
         public Game(string title, int width, int height)
                 : base(GameWindowSettings.Default,
                         new NativeWindowSettings()
@@ -55,51 +59,52 @@ namespace EcoMatrix.Core
             Global.windowHeight = height;
 
             GL.Enable(EnableCap.DepthTest);
-            GL.Enable(EnableCap.CullFace);
-
-            //GL.Enable(EnableCap.Blend);
-            //GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             StbImage.stbi_set_flip_vertically_on_load(1);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Linear);
 
-            renderer = new Renderer(new Shader(vertexShaderPath: Path.GetFullPath("shaders/vertex.vert"),
-                                               fragmentShaderPath: Path.GetFullPath("shaders/fragment.frag")));
+            renderer = new Renderer(new Shader(vertexShaderPath: Path.GetFullPath("shaders/default.vert"),
+                                               geometryShaderPath: Path.GetFullPath("shaders/default.geom"),
+                                               fragmentShaderPath: Path.GetFullPath("shaders/default.frag")));
 
             renderer.Shader.Use();
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.ambient"), 1f, 1f, 1f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.diffuse"), 1f, 1f, 1f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.specular"), 1f, 1f, 1f);
             GL.Uniform1(renderer.Shader.GetUniformLocation("material.shininess"), 32f);
+
+            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.ambient"), 1f, 1f, 1f);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.diffuse"), 1f, 1f, 1f);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.specular"), 1f, 1f, 1f);
             renderer.Shader.Unuse();
 
 
             // Initialization
-            sunTexture = new Texture2D(Global.catImage);
+            player = new Player(position: Global.playerSpawnPosition,
+                                rotation: Vector3.Zero,
+                                scale: Vector3.One,
+                                cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
+
+            sunTexture = new Texture2D(Global.sunImage);
             grassTexture = new Texture2D(Global.grassImage);
-
-            Global.player = new Player(position: Global.playerSpawnPosition,
-                                       rotation: Vector3.Zero,
-                                       scale: Vector3.One,
-                                       cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
-
             lightPosition = new Vector3(0, 100, 0);
+            vertexArrayObject = new DefaultVertexArray();
 
-            sun = new Mesh(Vector3.Zero, Vector3.Zero, new Vector3(15, 1, 15));
+            sun = new Mesh(Vector3.Zero, Vector3.Zero, new Vector3(5, 1, 5));
             terrain = new Mesh(Vector3.Zero, Vector3.Zero, Vector3.One);
 
             Helpers.ApplyNormals(vertices, triangleIndices, sun.ModelMatrix);
 
-
             sun.Vertices = Builders.VerticesBuilder(vertices);
             sun.Indices = Builders.IndicesBuilder(triangleIndices);
 
-            (terrain.Vertices, terrain.Indices) = WorldGenerator.GenerateAroundPlayer(Global.player.Position.X, Global.player.Position.Z);
+            (terrain.Vertices, terrain.Indices) = WorldGenerator.GenerateAround(player.Position.X, player.Position.Z);
         }
 
         protected override void OnLoad()
@@ -116,8 +121,8 @@ namespace EcoMatrix.Core
 
             GL.Viewport(0, 0, resizeEventArgs.Width, resizeEventArgs.Height);
 
-            Global.player.Camera.Resize(resizeEventArgs.Width, resizeEventArgs.Height);
-            renderer.Projection = Global.player.Camera.ProjectionMatrix;
+            player.Camera.Resize(resizeEventArgs.Width, resizeEventArgs.Height);
+            renderer.Projection = player.Camera.ProjectionMatrix;
         }
 
         protected override void OnUnload()
@@ -141,33 +146,38 @@ namespace EcoMatrix.Core
                 Close();
             }
 
-            if (Vector2.DistanceSquared(new Vector2(Global.player.Position.X, Global.player.Position.Z),
+            if (Vector2.DistanceSquared(new Vector2(player.Position.X, player.Position.Z),
                                         new Vector2(Global.worldCenterX, Global.worldCenterZ)) > Global.regenerateTriggerDistance2)
             {
-                (terrain.Vertices, terrain.Indices) = WorldGenerator.UpdateAroundPlayer(Global.player.Position.X, Global.player.Position.Z);
+                (terrain.Vertices, terrain.Indices) = WorldGenerator.UpdateAround(player.Position.X, player.Position.Z);
             }
 
-            Global.player.Update(KeyboardState, MouseState, (float)frameEventArgs.Time);
+            player.Update(KeyboardState, MouseState, (float)frameEventArgs.Time);
 
             Helpers.ApplyNormals(vertices, triangleIndices, sun.ModelMatrix);
 
             sun.Vertices = Builders.VerticesBuilder(vertices);
             sun.Indices = Builders.IndicesBuilder(triangleIndices);
 
-            renderer.View = Global.player.Camera.ViewMatrix;
+            renderer.View = player.Camera.ViewMatrix;
+
+            Vector3 sunDirection = Vector3.Normalize(lightPosition - player.Position);
 
             renderer.Shader.Use();
-            GL.Uniform3(renderer.Shader.GetUniformLocation("uViewPos"), Global.player.Position);
+            GL.Uniform1(renderer.Shader.GetUniformLocation("skybox"), 1);
+            GL.Uniform1(renderer.Shader.GetUniformLocation("uTexture"), 0);
+
+            GL.Uniform3(renderer.Shader.GetUniformLocation("uViewPos"), player.Position);
             GL.Uniform3(renderer.Shader.GetUniformLocation("uLightPos"), lightPosition);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.direction"), sunDirection.X, sunDirection.Y, sunDirection.Z);
             renderer.Shader.Unuse();
 
-            lightPosition = Global.player.Position + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 10000;
+            lightPosition = player.Position + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 5000;
 
-            sun.Position = lightPosition - new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 100;
+            sun.Position = lightPosition + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 100;
+            sun.Rotation = new Vector3(0, 90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(time), MathHelper.Sin(time))));
 
-            sun.Rotation = new Vector3(0, -90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(time), MathHelper.Sin(time))));
-
-            //time += (float)frameEventArgs.Time * 0.3f;
+            time += (float)frameEventArgs.Time * 0.3f;
 
             if (keyboardState.IsKeyDown(Keys.P))
             {
@@ -187,12 +197,23 @@ namespace EcoMatrix.Core
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             renderer.Begin();
+            vertexArrayObject.Bind();
+
+            GL.Clear(ClearBufferMask.DepthBufferBit);
+
+            GL.Enable(EnableCap.Blend);
+            GL.Disable(EnableCap.CullFace);
 
             sunTexture.Bind();
-            renderer.Draw(sun);
+            renderer.Draw(sun, vertexArrayObject);
+
+            GL.Clear(ClearBufferMask.DepthBufferBit);
+
+            GL.Enable(EnableCap.CullFace);
+            GL.Disable(EnableCap.Blend);
 
             grassTexture.Bind();
-            renderer.Draw(terrain);
+            renderer.Draw(terrain, vertexArrayObject);
 
             renderer.End();
 

@@ -13,10 +13,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="bin\Debug\net6.0\shaders\fragment.frag" />
-		<None Include="bin\Debug\net6.0\shaders\fragmentWithTexture.frag" />
-		<None Include="bin\Debug\net6.0\shaders\vertex.vert" />
-		<None Include="bin\Debug\net6.0\shaders\vertexWithTexture.vert" />
+		<None Include="bin\Debug\net6.0\shaders\default.frag" />
+		<None Include="bin\Debug\net6.0\shaders\default.geom" />
+		<None Include="bin\Debug\net6.0\shaders\default.vert" />
 	</ItemGroup>
 
 </Project>

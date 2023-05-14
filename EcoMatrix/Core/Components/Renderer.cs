@@ -1,3 +1,4 @@
+using EcoMatrix.Core.ArrayObjects;
 using EcoMatrix.Core.Components;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
@@ -74,17 +75,19 @@ namespace EcoMatrix.Core.Engine
             GL.UniformMatrix4(shader.GetUniformLocation("uProjection"), false, ref projection);
         }
 
-        public void Draw(Mesh mesh)
+        public void Draw(Mesh mesh, VertexArrayObject vertexArrayObject)
         {
             model = mesh.ModelMatrix;
 
             GL.UniformMatrix4(shader.GetUniformLocation("uModel"), false, ref model);
 
-            mesh.VertexArrayObject.Bind();
+            mesh.Bind();
+
+            vertexArrayObject.ApplyAttributes();
 
             GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
 
-            mesh.VertexArrayObject.Unbind();
+            mesh.Unbind();
         }
 
         public void End()

@@ -1,5 +1,4 @@
 using EcoMatrix.Core.Containers;
-using EcoMatrix.Core.Entities;
 using EcoMatrix.Core.WorldGeneration;
 using OpenTK.Mathematics;
 using StbImageSharp;
@@ -20,7 +19,7 @@ namespace EcoMatrix.Core.Utils
         public static int worldNoiseOctaves = 3;
         public static float worldNoiseLacunarity = 2f;
         public static float worldNoisePersistance = 0.25f;
-        public static float worldNoiseScale = 20;
+        public static float worldNoiseScale = 30;
 
         public static float worldCenterX = 0;
         public static float worldCenterZ = 0;
@@ -52,7 +51,5 @@ namespace EcoMatrix.Core.Utils
         public static ImageResult grassImage = ImageResult.FromStream(File.OpenRead("textures/grass.png"), ColorComponents.RedGreenBlueAlpha);
         public static ImageResult catImage = ImageResult.FromStream(File.OpenRead("textures/cat.png"), ColorComponents.RedGreenBlueAlpha);
         public static ImageResult sunImage = ImageResult.FromStream(File.OpenRead("textures/sun.png"), ColorComponents.RedGreenBlueAlpha);
-
-        public static Player player;
     }
 }

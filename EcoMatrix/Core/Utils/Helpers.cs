@@ -25,11 +25,11 @@ namespace EcoMatrix.Core.Utils
                 Vector3 positionAB = positionB - positionA;
                 Vector3 positionAC = positionC - positionA;
 
-                Vector3 crossedABAC = Vector3.Cross(positionAB, positionAC);
+                Vector3 crossedABAC = Vector3.Cross(positionAB, positionAC).Normalized();
 
-                vertexA.Normal = crossedABAC;
-                vertexB.Normal = crossedABAC;
-                vertexC.Normal = crossedABAC;
+                vertexA.Normal += crossedABAC;
+                vertexB.Normal += crossedABAC;
+                vertexC.Normal += crossedABAC;
             }
 
             for (int i = 0; i < vertices.Length; i++)

@@ -1,15 +1,16 @@
 using EcoMatrix.Core.Abstracts;
 using OpenTK.Graphics.OpenGL4;
 
-namespace EcoMatrix.Core.BufferObjects
+namespace EcoMatrix.Core.ArrayObjects
 {
-    public class VertexArrayObject : BufferObject
+    public abstract class VertexArrayObject : BufferObject
     {
 
         public VertexArrayObject()
         {
             Handle = GL.GenVertexArray();
         }
+        public abstract void ApplyAttributes();
 
         public override void Bind()
         {
@@ -20,6 +21,7 @@ namespace EcoMatrix.Core.BufferObjects
         {
             GL.BindVertexArray(0);
         }
+
 
         public override void Dispose()
         {

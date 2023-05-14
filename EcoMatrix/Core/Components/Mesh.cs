@@ -1,6 +1,5 @@
 using EcoMatrix.Core.Abstracts;
 using EcoMatrix.Core.BufferObjects;
-using EcoMatrix.Core.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -8,8 +7,6 @@ namespace EcoMatrix.Core.Components
 {
     public class Mesh : GameObject, IDisposable
     {
-        public VertexArrayObject VertexArrayObject { get; private set; }
-
         public VertexBufferObject VertexBufferObject { get; private set; }
 
         public ElementBufferObject ElementBufferObject { get; private set; }
@@ -70,54 +67,18 @@ namespace EcoMatrix.Core.Components
             vertices = new float[1];
             indices = new uint[1];
 
-            VertexArrayObject = new VertexArrayObject();
-            VertexArrayObject.Bind();
-
             VertexBufferObject = new VertexBufferObject();
-            VertexBufferObject.Bind();
-
             ElementBufferObject = new ElementBufferObject();
+        }
+
+        public void Bind()
+        {
+            VertexBufferObject.Bind();
             ElementBufferObject.Bind();
+        }
 
-
-            // position attribute
-            GL.VertexAttribPointer(index: 0,
-                                   size: Global.PositionAttributeSize,
-                                   type: VertexAttribPointerType.Float,
-                                   normalized: false,
-                                   stride: Global.AllShaderAttributeSize * sizeof(float),
-                                   offset: 0);
-            GL.EnableVertexAttribArray(0);
-
-            // color attribute
-            GL.VertexAttribPointer(index: 1,
-                                   size: Global.ColorAttributeSize,
-                                   type: VertexAttribPointerType.Float,
-                                   normalized: false,
-                                   stride: Global.AllShaderAttributeSize * sizeof(float),
-                                   offset: Global.PositionAttributeSize * sizeof(float));
-            GL.EnableVertexAttribArray(1);
-
-            // normal attribute
-            GL.VertexAttribPointer(index: 2,
-                                   size: Global.NormalAttributeSize,
-                                   type: VertexAttribPointerType.Float,
-                                   normalized: false,
-                                   stride: Global.AllShaderAttributeSize * sizeof(float),
-                                   offset: (Global.PositionAttributeSize + Global.ColorAttributeSize) * sizeof(float));
-            GL.EnableVertexAttribArray(2);
-
-
-            // texture coordinates attribute
-            GL.VertexAttribPointer(index: 3,
-                                   size: Global.TextureCoordinatesAttributeSize,
-                                   type: VertexAttribPointerType.Float,
-                                   normalized: false,
-                                   stride: Global.AllShaderAttributeSize * sizeof(float),
-                                   offset: (Global.PositionAttributeSize + Global.ColorAttributeSize + Global.NormalAttributeSize) * sizeof(float));
-            GL.EnableVertexAttribArray(3);
-
-            VertexArrayObject.Unbind();
+        public void Unbind()
+        {
             VertexBufferObject.Unbind();
             ElementBufferObject.Unbind();
         }
@@ -126,7 +87,6 @@ namespace EcoMatrix.Core.Components
         {
             VertexBufferObject.Dispose();
             ElementBufferObject.Dispose();
-            VertexArrayObject.Dispose();
 
             GC.SuppressFinalize(this);
         }

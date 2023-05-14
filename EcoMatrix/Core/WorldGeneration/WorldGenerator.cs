@@ -5,7 +5,7 @@ namespace EcoMatrix.Core.WorldGeneration
 {
     public static class WorldGenerator
     {
-        public static Tuple<float[], uint[]> GenerateAroundPlayer(float x, float z)
+        public static Tuple<float[], uint[]> GenerateAround(float x, float z)
         {
             float centerX = Helpers.Snap(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
             float centerZ = Helpers.Snap(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
@@ -27,7 +27,7 @@ namespace EcoMatrix.Core.WorldGeneration
             return BuildChunks();
         }
 
-        public static Tuple<float[], uint[]> UpdateAroundPlayer(float x, float z)
+        public static Tuple<float[], uint[]> UpdateAround(float x, float z)
         {
             float centerX = Helpers.Snap(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
             float centerZ = Helpers.Snap(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
@@ -47,10 +47,10 @@ namespace EcoMatrix.Core.WorldGeneration
 
                         for (int k = 0; k < Global.chunks.Count; k++)
                         {
-                            if (Vector2.DistanceSquared(new Vector2(Global.player.Position.X, Global.player.Position.Z),
-                                                        new Vector2(chunkFarthestFromPlayer.X, chunkFarthestFromPlayer.Z)) <
-                                Vector2.DistanceSquared(new Vector2(Global.player.Position.X, Global.player.Position.Z),
-                                                        new Vector2(Global.chunks[k].X, Global.chunks[k].Z)))
+                            if (Vector2.DistanceSquared(new Vector2(x, z),
+                                                        new Vector2(Global.chunks[k].X, Global.chunks[k].Z)) >
+                                Vector2.DistanceSquared(new Vector2(x, z),
+                                                        new Vector2(chunkFarthestFromPlayer.X, chunkFarthestFromPlayer.Z)))
                             {
                                 chunkFarthestFromPlayer = Global.chunks[k];
                             }
