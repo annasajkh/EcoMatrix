@@ -5,7 +5,7 @@ namespace EcoMatrix.Core.Utils
 {
     public class PerlinNoise
     {
-        private int[] permutationTable = new int[512];
+        private List<int> permutationTable = new List<int>(512);
         private Random random;
         private int seed;
 
@@ -15,11 +15,6 @@ namespace EcoMatrix.Core.Utils
             {
                 return seed;
             }
-            set
-            {
-                seed = value;
-                random = new Random(seed);
-            }
         }
 
         public PerlinNoise(int seed)
@@ -27,18 +22,16 @@ namespace EcoMatrix.Core.Utils
             this.seed = seed;
             random = new Random(seed);
 
-            int[] tableChunk = new int[256];
+            for (int i = 0; i < 256; i++)
+            {
+                permutationTable.Add(i);
+            }
+
+            permutationTable = permutationTable.OrderBy(x => random.Next()).ToList();
 
             for (int i = 0; i < 256; i++)
             {
-                tableChunk[i] = i % 255;
-            }
-
-            tableChunk.OrderBy(x => random.Next()).ToArray();
-
-            for (int i = 0; i < permutationTable.Length; i++)
-            {
-                permutationTable[i] = tableChunk[i % 256];
+                permutationTable.Add(permutationTable[i]);
             }
         }
 

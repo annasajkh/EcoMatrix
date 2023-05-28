@@ -27,14 +27,9 @@ namespace EcoMatrix.Core.Utils
 
                 Vector3 crossedABAC = Vector3.Cross(positionAB, positionAC).Normalized();
 
-                vertexA.Normal += crossedABAC;
-                vertexB.Normal += crossedABAC;
-                vertexC.Normal += crossedABAC;
-            }
-
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                vertices[i].Normal = Vector3.Normalize(vertices[i].Normal);
+                vertexA.Normal = crossedABAC;
+                vertexB.Normal = crossedABAC;
+                vertexC.Normal = crossedABAC;
             }
         }
     }

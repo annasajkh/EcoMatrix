@@ -26,67 +26,27 @@ namespace EcoMatrix.Core.WorldGeneration
 
         public Chunk(float x, float z)
         {
-            X = x;
-            Z = z;
-
             rectangles = new Rectangle[Global.chunkSize, Global.chunkSize];
 
             Vertices = new Vertex[rectangles.GetLength(0) * rectangles.GetLength(1) * 4];
             rectanglesFlatten = new Rectangle[rectangles.GetLength(0) * rectangles.GetLength(1)];
             Indices = new Indices[rectanglesFlatten.Length * 2];
 
-            GenerateMesh();
-        }
-
-        private void GenerateMesh()
-        {
             uint index = 0;
 
             for (int i = 0; i < rectangles.GetLength(0); i++)
             {
                 for (int j = 0; j < rectangles.GetLength(1); j++)
                 {
-                    // OpenGL order
-                    // 4-----1
-                    // |     |
-                    // |     |
-                    // 3-----2
-
-                    Vector3 vertexPosition = new Vector3(X + j * Global.chunkResolution, 0, Z + i * Global.chunkResolution);
-
-                    float noise1 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.005f,
-                                                                    (vertexPosition.Z + Global.chunkResolution) * 0.005f) * Global.worldMaxHeight;
-
-                    float noise2 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.005f,
-                                                                     vertexPosition.Z * 0.005f) * Global.worldMaxHeight;
-
-                    float noise3 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.005f,
-                                                                    vertexPosition.Z * 0.005f) * Global.worldMaxHeight;
-
-                    float noise4 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.005f,
-                                                                   (vertexPosition.Z + Global.chunkResolution) * 0.005f) * Global.worldMaxHeight;
-
                     if (rectangles[i, j] == null)
                     {
-                        Vertex vertexTopRight = new Vertex(vertexPosition + new Vector3(Global.chunkResolution, noise1, Global.chunkResolution),
-                                                           new Color4(1f, 1f, 1f, 1f),
-                                                           new Vector3(),
-                                                           new Vector2(1f, 1f));
+                        Vertex vertexTopRight = new Vertex(new Vector3(), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(1f, 1f));
 
-                        Vertex vertexBottomRight = new Vertex(vertexPosition + new Vector3(Global.chunkResolution, noise2, 0),
-                                                              new Color4(1f, 1f, 1f, 1f),
-                                                              new Vector3(),
-                                                              new Vector2(1f, 0f));
+                        Vertex vertexBottomRight = new Vertex(new Vector3(), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(1f, 0f));
 
-                        Vertex vertexBottomLeft = new Vertex(vertexPosition + new Vector3(0, noise3, 0),
-                                                             new Color4(1f, 1f, 1f, 1f),
-                                                             new Vector3(),
-                                                             new Vector2(0f, 0f));
+                        Vertex vertexBottomLeft = new Vertex(new Vector3(), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 0f));
 
-                        Vertex vertexTopLeft = new Vertex(vertexPosition + new Vector3(0, noise4, Global.chunkResolution),
-                                                          new Color4(1f, 1f, 1f, 1f),
-                                                          new Vector3(),
-                                                          new Vector2(0f, 1f));
+                        Vertex vertexTopLeft = new Vertex(new Vector3(), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 1f));
 
                         Indices[] indices = new Indices[] {
                             new Indices(index * 4, 1 + index * 4, 3 + index * 4),
@@ -100,10 +60,7 @@ namespace EcoMatrix.Core.WorldGeneration
                 }
             }
 
-            MergeVertices(rectangles);
-            MergeIndices(rectangles);
-
-            Helpers.ApplyNormals(Vertices, Indices, Matrix4.Identity);
+            UpdatePosition(x, z);
         }
 
         public void UpdatePosition(float x, float z)
@@ -119,37 +76,52 @@ namespace EcoMatrix.Core.WorldGeneration
                 {
                     Vector3 vertexPosition = new Vector3(X + j * Global.chunkResolution, 0, Z + i * Global.chunkResolution);
 
-                    float noise1 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.005f,
-                                                                    (vertexPosition.Z + Global.chunkResolution) * 0.005f) * Global.worldMaxHeight;
+                    float noise1 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
 
-                    float noise2 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.005f,
-                                                                     vertexPosition.Z * 0.005f) * Global.worldMaxHeight;
+                    float noise2 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.01f, vertexPosition.Z * 0.01f);
 
-                    float noise3 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.005f,
-                                                                    vertexPosition.Z * 0.005f) * Global.worldMaxHeight;
+                    float noise3 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, vertexPosition.Z * 0.01f);
 
-                    float noise4 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.005f,
-                                                                   (vertexPosition.Z + Global.chunkResolution) * 0.005f) * Global.worldMaxHeight;
+                    float noise4 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
 
-                    rectangles[i, j].VertexTopRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise1, Global.chunkResolution),
-                                             new Color4(1f, 1f, 1f, 1f),
-                                             new Vector3(),
-                                             new Vector2(1f, 1f));
+                    noise1 = MathHelper.MapRange(noise1, -1, 1, 0, 1);
+                    noise2 = MathHelper.MapRange(noise2, -1, 1, 0, 1);
+                    noise3 = MathHelper.MapRange(noise3, -1, 1, 0, 1);
+                    noise4 = MathHelper.MapRange(noise4, -1, 1, 0, 1);
 
-                    rectangles[i, j].VertexBottomRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise2, 0),
-                                                                    new Color4(1f, 1f, 1f, 1f),
+                    float noiseColor1 = MathHelper.MapRange(noise1, 0, 1, 0.5f, 0.05f);
+                    float noiseColor2 = MathHelper.MapRange(noise2, 0, 1, 0.5f, 0.05f);
+                    float noiseColor3 = MathHelper.MapRange(noise3, 0, 1, 0.5f, 0.05f);
+                    float noiseColor4 = MathHelper.MapRange(noise4, 0, 1, 0.5f, 0.05f);
+
+
+                    Color4 color1 = Color4.FromHsv(new Vector4(noiseColor1, 1f, 1f, 1f));
+                    Color4 color2 = Color4.FromHsv(new Vector4(noiseColor2, 1f, 1f, 1f));
+                    Color4 color3 = Color4.FromHsv(new Vector4(noiseColor3, 1f, 1f, 1f));
+                    Color4 color4 = Color4.FromHsv(new Vector4(noiseColor4, 1f, 1f, 1f));
+
+
+                    rectangles[i, j].VertexTopRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise1 * Global.worldMaxHeight, Global.chunkResolution),
+                                                                 color1,
+                                                                 new Vector3(),
+                                                                 new Vector2(1f, 1f));
+
+                    rectangles[i, j].VertexBottomRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise2 * Global.worldMaxHeight, 0),
+                                                                    color2,
                                                                     new Vector3(),
                                                                     new Vector2(1f, 0f));
 
-                    rectangles[i, j].VertexBottomLeft.UpdateVertex(vertexPosition + new Vector3(0, noise3, 0),
-                                                                   new Color4(1f, 1f, 1f, 1f),
+                    rectangles[i, j].VertexBottomLeft.UpdateVertex(vertexPosition + new Vector3(0, noise3 * Global.worldMaxHeight, 0),
+                                                                   color3,
                                                                    new Vector3(),
                                                                    new Vector2(0f, 0f));
 
-                    rectangles[i, j].VertexTopLeft.UpdateVertex(vertexPosition + new Vector3(0, noise4, Global.chunkResolution),
-                                                                new Color4(1f, 1f, 1f, 1f),
+                    rectangles[i, j].VertexTopLeft.UpdateVertex(vertexPosition + new Vector3(0, noise4 * Global.worldMaxHeight, Global.chunkResolution),
+                                                                color4,
                                                                 new Vector3(),
                                                                 new Vector2(0f, 1f));
+
+
                     rectangles[i, j].Indices[0] = new Indices(index * 4, 1 + index * 4, 3 + index * 4);
                     rectangles[i, j].Indices[1] = new Indices(1 + index * 4, 2 + index * 4, 3 + index * 4);
 
@@ -159,8 +131,6 @@ namespace EcoMatrix.Core.WorldGeneration
 
             MergeVertices(rectangles);
             MergeIndices(rectangles);
-
-            Helpers.ApplyNormals(Vertices, Indices, Matrix4.Identity);
         }
 
         private void MergeVertices(Rectangle[,] rectangles)

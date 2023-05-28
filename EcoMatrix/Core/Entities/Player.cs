@@ -7,7 +7,7 @@ namespace EcoMatrix.Core.Entities
 {
     public class Player : Entity
     {
-        private float speed = 10000f;
+        private float speed = 1000f;
 
         private Vector2 lastMousePosition;
 

@@ -22,10 +22,10 @@ namespace EcoMatrix.Core
         private Vector3 lightPosition;
 
         private Vertex[] vertices = {
-            new Vertex(new Vector3(-100f, 0, -100f), new Color4(1f, 1f, 1f, 1f), new Vector3(), new Vector2(1f, 1f)),
-            new Vertex(new Vector3(-100f, 0f, 100f), new Color4(1f, 1f, 1f, 1f), new Vector3(), new Vector2(1f, 0f)),
-            new Vertex(new Vector3(100f, 0, 100f), new Color4(1f, 1f, 1f, 1f), new Vector3(), new Vector2(0f, 0f)),
-            new Vertex(new Vector3(100f, 0, -100f), new Color4(1f, 1f, 1f, 1f), new Vector3(), new Vector2(0f, 1f))
+            new Vertex(new Vector3(-100f, 0, -100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(1f, 1f)),
+            new Vertex(new Vector3(-100f, 0f, 100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(1f, 0f)),
+            new Vertex(new Vector3(100f, 0, 100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 0f)),
+            new Vertex(new Vector3(100f, 0, -100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 1f))
         };
 
         private Indices[] triangleIndices = {
@@ -34,7 +34,7 @@ namespace EcoMatrix.Core
         };
 
         private Texture2D sunTexture;
-        private Texture2D grassTexture;
+        private Texture2D defaultTexture;
 
         private float time;
 
@@ -74,12 +74,12 @@ namespace EcoMatrix.Core
                                                fragmentShaderPath: Path.GetFullPath("shaders/default.frag")));
 
             renderer.Shader.Use();
-            GL.Uniform3(renderer.Shader.GetUniformLocation("material.ambient"), 1f, 1f, 1f);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("material.ambient"), 1.2f, 1.2f, 1.2f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.diffuse"), 1f, 1f, 1f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.specular"), 1f, 1f, 1f);
             GL.Uniform1(renderer.Shader.GetUniformLocation("material.shininess"), 32f);
 
-            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.ambient"), 1f, 1f, 1f);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.ambient"), 1.2f, 1.2f, 1.2f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.diffuse"), 1f, 1f, 1f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.specular"), 1f, 1f, 1f);
             renderer.Shader.Unuse();
@@ -92,7 +92,7 @@ namespace EcoMatrix.Core
                                 cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
 
             sunTexture = new Texture2D(Global.sunImage);
-            grassTexture = new Texture2D(Global.grassImage);
+            defaultTexture = new Texture2D(Global.defaultTexture);
             lightPosition = new Vector3(0, 100, 0);
             vertexArrayObject = new DefaultVertexArray();
 
@@ -177,7 +177,7 @@ namespace EcoMatrix.Core
             sun.Position = lightPosition + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 100;
             sun.Rotation = new Vector3(0, 90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(time), MathHelper.Sin(time))));
 
-            time += (float)frameEventArgs.Time * 0.3f;
+            //time += (float)frameEventArgs.Time * 0.5f;
 
             if (keyboardState.IsKeyDown(Keys.P))
             {
@@ -212,7 +212,7 @@ namespace EcoMatrix.Core
             GL.Enable(EnableCap.CullFace);
             GL.Disable(EnableCap.Blend);
 
-            grassTexture.Bind();
+            defaultTexture.Bind();
             renderer.Draw(terrain, vertexArrayObject);
 
             renderer.End();

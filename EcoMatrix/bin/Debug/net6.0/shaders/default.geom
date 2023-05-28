@@ -28,16 +28,22 @@ out vec3 gViewPos;
 
 void main()
 {
-    // vec3 vector0 = vec3(gl_in[0].gl_Position - gl_in[1].gl_Position);
-    // vec3 vector1 = vec3(gl_in[2].gl_Position - gl_in[1].gl_Position);
-    // vec3 surfaceNormal = normalize(cross(vector0, vector1));
+    vec3 surfaceNormal = vec3(0);
 
+    if (all(equal(data_in[0].vNormal, vec3(0))) &&
+        all(equal(data_in[1].vNormal, vec3(0))) &&
+        all(equal(data_in[2].vNormal, vec3(0))))
+    {
+        vec3 vectorFirst = vec3(data_in[1].vFragPos - data_in[0].vFragPos);
+        vec3 vectorSecond = vec3(data_in[2].vFragPos - data_in[0].vFragPos);
+        surfaceNormal = normalize(cross(vectorFirst, vectorSecond));
+    }
 
     gl_Position = data_in[0].vProjection * (gl_in[0].gl_Position);
     
     gFragPos = data_in[0].vFragPos;
     gColor = data_in[0].vColor;
-    gNormal = data_in[0].vNormal;
+    gNormal = all(equal(surfaceNormal, vec3(0))) ? data_in[0].vNormal : surfaceNormal;
     gUV = data_in[0].vUV;
 
     gLightPos = data_in[0].vLightPos;
@@ -49,7 +55,7 @@ void main()
     
     gFragPos = data_in[1].vFragPos;
     gColor = data_in[1].vColor;
-    gNormal = data_in[1].vNormal;
+    gNormal = all(equal(surfaceNormal, vec3(0))) ? data_in[1].vNormal : surfaceNormal;
     gUV = data_in[1].vUV;
 
     gLightPos = data_in[1].vLightPos;
@@ -61,7 +67,7 @@ void main()
     
     gFragPos = data_in[2].vFragPos;
     gColor = data_in[2].vColor;
-    gNormal = data_in[2].vNormal;
+    gNormal = all(equal(surfaceNormal, vec3(0))) ? data_in[2].vNormal : surfaceNormal;
     gUV = data_in[2].vUV;
 
     gLightPos = data_in[2].vLightPos;

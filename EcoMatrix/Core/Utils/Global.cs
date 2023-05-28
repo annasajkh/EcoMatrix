@@ -16,15 +16,15 @@ namespace EcoMatrix.Core.Utils
 
         public static int renderDistance = 7;
 
-        public static int worldNoiseOctaves = 3;
-        public static float worldNoiseLacunarity = 2f;
+        public static int worldNoiseOctaves = 4;
+        public static float worldNoiseLacunarity = 3f;
         public static float worldNoisePersistance = 0.25f;
-        public static float worldNoiseScale = 30;
+        public static float worldNoiseScale = 50;
 
         public static float worldCenterX = 0;
         public static float worldCenterZ = 0;
 
-        public static float worldMaxHeight = 1000;
+        public static float worldMaxHeight = 2000;
         public static Random random = new Random();
 
         public static int PositionAttributeSize { get; } = 3;
@@ -37,7 +37,7 @@ namespace EcoMatrix.Core.Utils
                                                             NormalAttributeSize +
                                                             TextureCoordinatesAttributeSize;
 
-        public static Vector3 playerSpawnPosition = new Vector3(0, 1000, 0);
+        public static Vector3 playerSpawnPosition = new Vector3(0, 2000, 0);
 
         public static float regenerateTriggerDistance2 = (chunkFullSize * renderDistance * 0.25f) *
                                                          (chunkFullSize * renderDistance * 0.25f);
@@ -48,8 +48,8 @@ namespace EcoMatrix.Core.Utils
         public static List<Vertex[]> builderTerrainVertices = new List<Vertex[]>();
         public static List<Indices[]> builderTerrainIndices = new List<Indices[]>();
 
-        public static ImageResult grassImage = ImageResult.FromStream(File.OpenRead("textures/grass.png"), ColorComponents.RedGreenBlueAlpha);
         public static ImageResult catImage = ImageResult.FromStream(File.OpenRead("textures/cat.png"), ColorComponents.RedGreenBlueAlpha);
         public static ImageResult sunImage = ImageResult.FromStream(File.OpenRead("textures/sun.png"), ColorComponents.RedGreenBlueAlpha);
+        public static ImageResult defaultTexture = ImageResult.FromStream(File.OpenRead("textures/default_texture.png"), ColorComponents.RedGreenBlueAlpha);
     }
 }
