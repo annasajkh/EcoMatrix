@@ -7,27 +7,27 @@ namespace EcoMatrix.Core.Containers
         public Vector3 Position { get; set; }
         public Color4 Color { get; set; }
         public Vector3 Normal { get; set; }
-        public Vector2 TextureCoordinates { get; set; }
+        public Vector2 TextureCoordinate { get; set; }
 
-        public Vertex(Vector3 position, Color4 color, Vector3 normal, Vector2 textureCoordinates)
+        public Vertex(Vector3 position, Color4 color, Vector3 normal, Vector2 textureCoordinate)
         {
             Position = position;
             Color = color;
             Normal = normal;
-            TextureCoordinates = textureCoordinates;
+            TextureCoordinate = textureCoordinate;
         }
 
-        public void UpdateVertex(Vector3 position, Color4 color, Vector3 normal, Vector2 textureCoordinates)
+        public void UpdateVertex(Vector3 position, Color4 color, Vector3 normal, Vector2 textureCoordinate)
         {
             Position = position;
             Color = color;
             Normal = normal;
-            TextureCoordinates = textureCoordinates;
+            TextureCoordinate = textureCoordinate;
         }
 
         public override string ToString()
         {
-            return $"Position: [{Position.X}, {Position.Y}, {Position.Z}]\nColor: [{Color.R}, {Color.G}, {Color.B}, {Color.A}]\nNormal: [{Normal.X}, {Normal.Y}, {Normal.Z}]\nTextureCoordinates: [{TextureCoordinates.X}, {TextureCoordinates.Y}]";
+            return $"Position: [{Position.X}, {Position.Y}, {Position.Z}]\nColor: [{Color.R}, {Color.G}, {Color.B}, {Color.A}]\nNormal: [{Normal.X}, {Normal.Y}, {Normal.Z}]\nTextureCoordinate: [{TextureCoordinate.X}, {TextureCoordinate.Y}]";
         }
     }
 }

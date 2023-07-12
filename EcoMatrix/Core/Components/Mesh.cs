@@ -1,5 +1,6 @@
 using EcoMatrix.Core.Abstracts;
 using EcoMatrix.Core.BufferObjects;
+using EcoMatrix.Core.Utils;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -11,10 +12,11 @@ namespace EcoMatrix.Core.Components
 
         public ElementBufferObject ElementBufferObject { get; private set; }
 
+        public BufferUsageHint BufferUsageHint { get; set; }
 
         private float[] vertices;
 
-        private uint[] indices;
+        private uint[] triangleIndices;
 
 
         public float[] Vertices
@@ -27,21 +29,21 @@ namespace EcoMatrix.Core.Components
             set
             {
                 vertices = value;
-                VertexBufferObject.ChangeData(value, BufferUsageHint.DynamicDraw);
+                VertexBufferObject.Data(value);
             }
         }
 
-        public uint[] Indices
+        public uint[] TriangleIndices
         {
             get
             {
-                return indices;
+                return triangleIndices;
             }
 
             set
             {
-                indices = value;
-                ElementBufferObject.ChangeData(value, BufferUsageHint.DynamicDraw);
+                triangleIndices = value;
+                ElementBufferObject.Data(value);
             }
         }
 
@@ -61,14 +63,35 @@ namespace EcoMatrix.Core.Components
             }
         }
 
-        public Mesh(Vector3 position, Vector3 rotation, Vector3 scale)
+        public Mesh(Vector3 position, 
+                    Vector3 rotation, 
+                    Vector3 scale, 
+                    BufferUsageHint bufferUsageHint,
+                    float[] vertices,
+                    uint[] triangleIndices)
             : base(position, rotation, scale)
         {
-            vertices = new float[1];
-            indices = new uint[1];
+            this.vertices = vertices;
+            this.triangleIndices = triangleIndices;
 
-            VertexBufferObject = new VertexBufferObject();
-            ElementBufferObject = new ElementBufferObject();
+            VertexBufferObject = new VertexBufferObject(bufferUsageHint);
+            ElementBufferObject = new ElementBufferObject(bufferUsageHint);
+
+            Vertices = vertices;
+            TriangleIndices = triangleIndices;
+
+            BufferUsageHint = bufferUsageHint;
+        }
+
+
+        public Mesh(Vector3 position,
+            Vector3 rotation,
+            Vector3 scale,
+            BufferUsageHint bufferUsageHint,
+            MeshInstance meshInstance)
+        : this(position, rotation, scale, bufferUsageHint, Builders.VerticesBuilder(meshInstance.Vertices), Builders.IndicesBuilder(meshInstance.TriangleIndices))
+        {
+
         }
 
         public void Bind()

@@ -85,7 +85,7 @@ namespace EcoMatrix.Core.Engine
 
             vertexArrayObject.ApplyAttributes();
 
-            GL.DrawElements(PrimitiveType.Triangles, mesh.Indices.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(PrimitiveType.Triangles, mesh.TriangleIndices.Length * 3, DrawElementsType.UnsignedInt, 0);
 
             mesh.Unbind();
         }

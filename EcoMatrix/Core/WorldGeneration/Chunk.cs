@@ -7,11 +7,8 @@ namespace EcoMatrix.Core.WorldGeneration
 {
     public class Chunk
     {
-        private Rectangle[] rectanglesFlatten;
-
         private Rectangle[,] rectangles;
         public Vertex[] Vertices { get; private set; }
-        public Indices[] Indices { get; private set; }
 
         public float X { get; private set; }
         public float Z { get; private set; }
@@ -29,8 +26,6 @@ namespace EcoMatrix.Core.WorldGeneration
             rectangles = new Rectangle[Global.chunkSize, Global.chunkSize];
 
             Vertices = new Vertex[rectangles.GetLength(0) * rectangles.GetLength(1) * 4];
-            rectanglesFlatten = new Rectangle[rectangles.GetLength(0) * rectangles.GetLength(1)];
-            Indices = new Indices[rectanglesFlatten.Length * 2];
 
             uint index = 0;
 
@@ -48,12 +43,7 @@ namespace EcoMatrix.Core.WorldGeneration
 
                         Vertex vertexTopLeft = new Vertex(new Vector3(), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 1f));
 
-                        Indices[] indices = new Indices[] {
-                            new Indices(index * 4, 1 + index * 4, 3 + index * 4),
-                            new Indices(1 + index * 4, 2 + index * 4, 3 + index * 4)
-                        };
-
-                        rectangles[i, j] = new Rectangle(vertexTopRight, vertexBottomRight, vertexBottomLeft, vertexTopLeft, indices);
+                        rectangles[i, j] = new Rectangle(vertexTopRight, vertexBottomRight, vertexBottomLeft, vertexTopLeft);
                     }
 
                     index++;
@@ -84,21 +74,17 @@ namespace EcoMatrix.Core.WorldGeneration
 
                     float noise4 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
 
+
                     noise1 = MathHelper.MapRange(noise1, -1, 1, 0, 1);
                     noise2 = MathHelper.MapRange(noise2, -1, 1, 0, 1);
                     noise3 = MathHelper.MapRange(noise3, -1, 1, 0, 1);
                     noise4 = MathHelper.MapRange(noise4, -1, 1, 0, 1);
 
-                    float noiseColor1 = MathHelper.MapRange(noise1, 0, 1, 0.5f, 0.05f);
-                    float noiseColor2 = MathHelper.MapRange(noise2, 0, 1, 0.5f, 0.05f);
-                    float noiseColor3 = MathHelper.MapRange(noise3, 0, 1, 0.5f, 0.05f);
-                    float noiseColor4 = MathHelper.MapRange(noise4, 0, 1, 0.5f, 0.05f);
 
-
-                    Color4 color1 = Color4.FromHsv(new Vector4(noiseColor1, 1f, 1f, 1f));
-                    Color4 color2 = Color4.FromHsv(new Vector4(noiseColor2, 1f, 1f, 1f));
-                    Color4 color3 = Color4.FromHsv(new Vector4(noiseColor3, 1f, 1f, 1f));
-                    Color4 color4 = Color4.FromHsv(new Vector4(noiseColor4, 1f, 1f, 1f));
+                    Color4 color1 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise1);
+                    Color4 color2 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise2);
+                    Color4 color3 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise3);
+                    Color4 color4 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise4);
 
 
                     rectangles[i, j].VertexTopRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise1 * Global.worldMaxHeight, Global.chunkResolution),
@@ -120,17 +106,11 @@ namespace EcoMatrix.Core.WorldGeneration
                                                                 color4,
                                                                 new Vector3(),
                                                                 new Vector2(0f, 1f));
-
-
-                    rectangles[i, j].Indices[0] = new Indices(index * 4, 1 + index * 4, 3 + index * 4);
-                    rectangles[i, j].Indices[1] = new Indices(1 + index * 4, 2 + index * 4, 3 + index * 4);
-
                     index++;
                 }
             }
 
             MergeVertices(rectangles);
-            MergeIndices(rectangles);
         }
 
         private void MergeVertices(Rectangle[,] rectangles)
@@ -148,31 +128,6 @@ namespace EcoMatrix.Core.WorldGeneration
 
                     index += 4;
                 }
-            }
-        }
-
-        private void MergeIndices(Rectangle[,] rectangles)
-        {
-            int index = 0;
-
-            for (int i = 0; i < rectangles.GetLength(0); i++)
-            {
-                for (int j = 0; j < rectangles.GetLength(1); j++)
-                {
-                    rectanglesFlatten[index] = rectangles[i, j];
-
-                    index++;
-                }
-            }
-
-            index = 0;
-
-            for (int i = 0; i < Indices.Length; i += 2)
-            {
-                Indices[i] = rectanglesFlatten[index].Indices[0];
-                Indices[i + 1] = rectanglesFlatten[index].Indices[1];
-
-                index++;
             }
         }
     }

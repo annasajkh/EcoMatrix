@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "OskUjyKWjQ1PkpPBxXj8NUVKU1uYprWgTpf2f6Oy8G4yBvfS40mGs1byqAzDLFKG5svPGv5P7SD6/hOP42+nRw==",
+  "dgSpecHash": "TmKX0WTmvqYfqgIDzQni1j491t0EmXrAmlAR2CPSaYaZlyXCThw1kkhRWWxmpaJ7jpaMNpgpJEedHSLhkcJY5w==",
   "success": true,
   "projectFilePath": "D:\\Projects\\C#\\EcoMatrix\\EcoMatrix\\EcoMatrix.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Annas\\.nuget\\packages\\cjclutter.objloader.unofficial\\1.1.0\\cjclutter.objloader.unofficial.1.1.0.nupkg.sha512",
     "C:\\Users\\Annas\\.nuget\\packages\\opentk\\4.7.7\\opentk.4.7.7.nupkg.sha512",
     "C:\\Users\\Annas\\.nuget\\packages\\opentk.compute\\4.7.7\\opentk.compute.4.7.7.nupkg.sha512",
     "C:\\Users\\Annas\\.nuget\\packages\\opentk.core\\4.7.7\\opentk.core.4.7.7.nupkg.sha512",

@@ -46,6 +46,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "CjClutter.ObjLoader.Unofficial": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
             "OpenTK": {
               "target": "Package",
               "version": "[4.7.7, )"

@@ -2,6 +2,15 @@
   "version": 3,
   "targets": {
     "net6.0": {
+      "CjClutter.ObjLoader.Unofficial/1.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/CjClutter.ObjLoader.Loader.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/CjClutter.ObjLoader.Loader.dll": {}
+        }
+      },
       "OpenTK/4.7.7": {
         "type": "package",
         "dependencies": {
@@ -214,6 +223,19 @@
     }
   },
   "libraries": {
+    "CjClutter.ObjLoader.Unofficial/1.1.0": {
+      "sha512": "Z1zXHoAkoY7LqXU92fbLvh8Of0T0407SJp8smypjBVq7C5e+Ud1am7VHnx+ZTiEGobTXx5IJzP6EAlb3NvKqfg==",
+      "type": "package",
+      "path": "cjclutter.objloader.unofficial/1.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "cjclutter.objloader.unofficial.1.1.0.nupkg.sha512",
+        "cjclutter.objloader.unofficial.nuspec",
+        "lib/net5.0/CjClutter.ObjLoader.Loader.dll",
+        "lib/netstandard1.4/CjClutter.ObjLoader.Loader.dll"
+      ]
+    },
     "OpenTK/4.7.7": {
       "sha512": "T5SV1uSNgB5dpipFsfMkTnK3IIGzUnl1J2foYu3tqmYwlqLnQfQHFZ6ILiNQMPhXdBhrjnxHIU7ZeWJdNW60sw==",
       "type": "package",
@@ -427,6 +449,7 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "CjClutter.ObjLoader.Unofficial >= 1.1.0",
       "OpenTK >= 4.7.7",
       "StbImageSharp >= 2.27.13"
     ]
@@ -478,6 +501,10 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "CjClutter.ObjLoader.Unofficial": {
+            "target": "Package",
+            "version": "[1.1.0, )"
+          },
           "OpenTK": {
             "target": "Package",
             "version": "[4.7.7, )"

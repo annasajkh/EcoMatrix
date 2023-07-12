@@ -8,11 +8,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="CjClutter.ObjLoader.Unofficial" Version="1.1.0" />
 		<PackageReference Include="OpenTK" Version="4.7.7" />
 		<PackageReference Include="StbImageSharp" Version="2.27.13" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Include="..\.editorconfig" Link=".editorconfig" />
 		<None Include="bin\Debug\net6.0\shaders\default.frag" />
 		<None Include="bin\Debug\net6.0\shaders\default.geom" />
 		<None Include="bin\Debug\net6.0\shaders\default.vert" />

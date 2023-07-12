@@ -15,25 +15,21 @@ namespace EcoMatrix.Core.Shapes
         public Vertex VertexBottomLeft { get; set; }
         public Vertex VertexTopLeft { get; set; }
 
-        public Indices[] Indices { get; set; }
-
-        public Rectangle(Vertex vertexTopRight, Vertex vertexBottomRight, Vertex vertexBottomLeft, Vertex vertexTopLeft, Indices[] indices)
+        public Rectangle(Vertex vertexTopRight, Vertex vertexBottomRight, Vertex vertexBottomLeft, Vertex vertexTopLeft)
         {
             VertexTopRight = vertexTopRight;
             VertexBottomRight = vertexBottomRight;
             VertexBottomLeft = vertexBottomLeft;
             VertexTopLeft = vertexTopLeft;
-            Indices = indices;
         }
 
 
-        public void UpdateRectangle(Vertex vertexTopRight, Vertex vertexBottomRight, Vertex vertexBottomLeft, Vertex vertexTopLeft, Indices[] indices)
+        public void UpdateRectangle(Vertex vertexTopRight, Vertex vertexBottomRight, Vertex vertexBottomLeft, Vertex vertexTopLeft)
         {
             VertexTopRight = vertexTopRight;
             VertexBottomRight = vertexBottomRight;
             VertexBottomLeft = vertexBottomLeft;
             VertexTopLeft = vertexTopLeft;
-            Indices = indices;
         }
     }
 }

@@ -1,7 +1,6 @@
 using EcoMatrix.Core.ArrayObjects;
 using EcoMatrix.Core.BufferObjects;
 using EcoMatrix.Core.Components;
-using EcoMatrix.Core.Containers;
 using EcoMatrix.Core.Engine;
 using EcoMatrix.Core.Entities;
 using EcoMatrix.Core.Utils;
@@ -21,25 +20,16 @@ namespace EcoMatrix.Core
         private Renderer renderer;
         private Vector3 lightPosition;
 
-        private Vertex[] vertices = {
-            new Vertex(new Vector3(-100f, 0, -100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(1f, 1f)),
-            new Vertex(new Vector3(-100f, 0f, 100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(1f, 0f)),
-            new Vertex(new Vector3(100f, 0, 100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 0f)),
-            new Vertex(new Vector3(100f, 0, -100f), new Color4(1f, 1f, 1f, 1f), Vector3.Zero, new Vector2(0f, 1f))
-        };
-
-        private Indices[] triangleIndices = {
-            new Indices(0, 1, 3),
-            new Indices(1, 2, 3)
-        };
-
         private Texture2D sunTexture;
         private Texture2D defaultTexture;
+        private Texture2D catTexture;
 
+        // 0 - 360
         private float time;
 
         private Mesh sun;
         private Mesh terrain;
+        private Mesh cube;
 
         public Player player;
         public VertexArrayObject vertexArrayObject;
@@ -74,15 +64,17 @@ namespace EcoMatrix.Core
                                                fragmentShaderPath: Path.GetFullPath("shaders/default.frag")));
 
             renderer.Shader.Use();
-            GL.Uniform3(renderer.Shader.GetUniformLocation("material.ambient"), 1.2f, 1.2f, 1.2f);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("material.ambient"), 1.25f, 1.25f, 1.25f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.diffuse"), 1f, 1f, 1f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("material.specular"), 1f, 1f, 1f);
             GL.Uniform1(renderer.Shader.GetUniformLocation("material.shininess"), 32f);
 
-            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.ambient"), 1.2f, 1.2f, 1.2f);
+            GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.ambient"), 1.25f, 1.25f, 1.25f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.diffuse"), 1f, 1f, 1f);
             GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.specular"), 1f, 1f, 1f);
             renderer.Shader.Unuse();
+
+            //GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
 
 
             // Initialization
@@ -91,20 +83,21 @@ namespace EcoMatrix.Core
                                 scale: Vector3.One,
                                 cameraSize: new Vector2(Global.windowWidth, Global.windowHeight));
 
+            cube = new Mesh(player.Position - new Vector3(0, 500, 0), Vector3.Zero, new Vector3(100, 100, 100), BufferUsageHint.StaticDraw, MeshInstance.Cube);
+
             sunTexture = new Texture2D(Global.sunImage);
-            defaultTexture = new Texture2D(Global.defaultTexture);
+            defaultTexture = new Texture2D(Global.defaultImage);
+            catTexture = new Texture2D(Global.catImage);
+
             lightPosition = new Vector3(0, 100, 0);
             vertexArrayObject = new DefaultVertexArray();
 
-            sun = new Mesh(Vector3.Zero, Vector3.Zero, new Vector3(5, 1, 5));
-            terrain = new Mesh(Vector3.Zero, Vector3.Zero, Vector3.One);
+            sun = new Mesh(Vector3.Zero, Vector3.Zero, new Vector3(500, 1, 500), BufferUsageHint.StaticDraw, MeshInstance.Quad);
 
-            Helpers.ApplyNormals(vertices, triangleIndices, sun.ModelMatrix);
+            Tuple<float[], uint[]> spawnChunks = WorldGenerator.GenerateAround(player.Position.X, player.Position.Z);
 
-            sun.Vertices = Builders.VerticesBuilder(vertices);
-            sun.Indices = Builders.IndicesBuilder(triangleIndices);
+            terrain = new Mesh(Vector3.Zero, Vector3.Zero, Vector3.One, BufferUsageHint.DynamicDraw, spawnChunks.Item1, spawnChunks.Item2);
 
-            (terrain.Vertices, terrain.Indices) = WorldGenerator.GenerateAround(player.Position.X, player.Position.Z);
         }
 
         protected override void OnLoad()
@@ -132,6 +125,10 @@ namespace EcoMatrix.Core
             renderer.Dispose();
             terrain.Dispose();
             sun.Dispose();
+
+            sunTexture.Dispose();
+            defaultTexture.Dispose();
+            catTexture.Dispose();
         }
 
         protected override void OnUpdateFrame(FrameEventArgs frameEventArgs)
@@ -149,35 +146,40 @@ namespace EcoMatrix.Core
             if (Vector2.DistanceSquared(new Vector2(player.Position.X, player.Position.Z),
                                         new Vector2(Global.worldCenterX, Global.worldCenterZ)) > Global.regenerateTriggerDistance2)
             {
-                (terrain.Vertices, terrain.Indices) = WorldGenerator.UpdateAround(player.Position.X, player.Position.Z);
+                (terrain.Vertices, terrain.TriangleIndices) = WorldGenerator.UpdateAround(player.Position.X, player.Position.Z);
             }
 
             player.Update(KeyboardState, MouseState, (float)frameEventArgs.Time);
-
-            Helpers.ApplyNormals(vertices, triangleIndices, sun.ModelMatrix);
-
-            sun.Vertices = Builders.VerticesBuilder(vertices);
-            sun.Indices = Builders.IndicesBuilder(triangleIndices);
 
             renderer.View = player.Camera.ViewMatrix;
 
             Vector3 sunDirection = Vector3.Normalize(lightPosition - player.Position);
 
             renderer.Shader.Use();
-            GL.Uniform1(renderer.Shader.GetUniformLocation("skybox"), 1);
-            GL.Uniform1(renderer.Shader.GetUniformLocation("uTexture"), 0);
+
+
+            GL.Uniform3(renderer.Shader.GetUniformLocation("lightColor"), 1f, 1f, 1f);
 
             GL.Uniform3(renderer.Shader.GetUniformLocation("uViewPos"), player.Position);
             GL.Uniform3(renderer.Shader.GetUniformLocation("uLightPos"), lightPosition);
             GL.Uniform3(renderer.Shader.GetUniformLocation("dirLight.direction"), sunDirection.X, sunDirection.Y, sunDirection.Z);
             renderer.Shader.Unuse();
 
-            lightPosition = player.Position + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 5000;
+            lightPosition = player.Position + new Vector3((float)MathHelper.Cos(MathHelper.DegreesToRadians(time)), (float)MathHelper.Sin(MathHelper.DegreesToRadians(time)), 0) * 5000;
 
-            sun.Position = lightPosition + new Vector3((float)MathHelper.Cos(time), (float)MathHelper.Sin(time), 0) * 100;
-            sun.Rotation = new Vector3(0, 90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(time), MathHelper.Sin(time))));
+            sun.Position = lightPosition + new Vector3((float)MathHelper.Cos(MathHelper.DegreesToRadians(time)), (float)MathHelper.Sin(MathHelper.DegreesToRadians(time)), 0) * 100;
+            sun.Rotation = new Vector3(0, 90, -MathHelper.RadiansToDegrees((float)MathHelper.Atan2(MathHelper.Cos(MathHelper.DegreesToRadians(time)), MathHelper.Sin(MathHelper.DegreesToRadians(time)))));
 
-            //time += (float)frameEventArgs.Time * 0.5f;
+            cube.Rotation = new Vector3(cube.Rotation.X + 0.5f, 0, cube.Rotation.Z + 0.5f);
+
+            if (keyboardState.IsKeyDown(Keys.Up))
+            {
+                time += (float)frameEventArgs.Time * 20;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down))
+            {
+                time -= (float)frameEventArgs.Time * 20;
+            }
 
             if (keyboardState.IsKeyDown(Keys.P))
             {
@@ -186,6 +188,11 @@ namespace EcoMatrix.Core
             else
             {
                 CursorState = CursorState.Grabbed;
+            }
+
+            if (time > 360)
+            {
+                time = 0;
             }
         }
 
@@ -215,7 +222,16 @@ namespace EcoMatrix.Core
             defaultTexture.Bind();
             renderer.Draw(terrain, vertexArrayObject);
 
+            catTexture.Bind();
+
+            GL.Enable(EnableCap.Blend);
+            GL.Disable(EnableCap.CullFace);
+
+            renderer.Draw(cube, vertexArrayObject);
+
             renderer.End();
+
+            
 
             SwapBuffers();
         }

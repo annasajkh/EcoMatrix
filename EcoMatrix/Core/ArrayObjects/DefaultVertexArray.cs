@@ -5,8 +5,6 @@ namespace EcoMatrix.Core.ArrayObjects
 {
     public class DefaultVertexArray : VertexArrayObject
     {
-
-
         public override void ApplyAttributes()
         {
             // position attribute
@@ -39,7 +37,7 @@ namespace EcoMatrix.Core.ArrayObjects
 
             // texture coordinates attribute
             GL.VertexAttribPointer(index: 3,
-                                   size: Global.TextureCoordinatesAttributeSize,
+                                   size: Global.TextureCoordinateAttributeSize,
                                    type: VertexAttribPointerType.Float,
                                    normalized: false,
                                    stride: Global.AllShaderAttributeSize * sizeof(float),

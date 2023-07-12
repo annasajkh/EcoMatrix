@@ -5,15 +5,19 @@ namespace EcoMatrix.Core.BufferObjects
 {
     public class VertexBufferObject : BufferObject
     {
-        public VertexBufferObject()
+        public BufferUsageHint BufferUsageHint { get; set; }
+
+        public VertexBufferObject(BufferUsageHint bufferUsageHint)
         {
             Handle = GL.GenBuffer();
+
+            BufferUsageHint = bufferUsageHint;
         }
 
-        public void ChangeData(float[] bufferData, BufferUsageHint bufferUsageHint)
+        public void Data(float[] bufferData)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, Handle);
-            GL.BufferData(BufferTarget.ArrayBuffer, bufferData.Length * sizeof(float), bufferData, bufferUsageHint);
+            GL.BufferData(BufferTarget.ArrayBuffer, bufferData.Length * sizeof(float), bufferData, BufferUsageHint);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
         }
 

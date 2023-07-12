@@ -39,12 +39,12 @@ in vec3 gViewPos;
 
 uniform Material material;
 uniform DirLight dirLight;
+uniform vec3 lightColor;
 
 // #define NR_POINT_LIGHTS 4
 // uniform PointLight pointLights[NR_POINT_LIGHTS];
 
 float ambientStrength = 0.5;
-vec3 lightColor = vec3(1.0, 1.0, 1.0);
 float specularStrength = 0.1;
 
 // outputs
@@ -64,7 +64,7 @@ vec3 CalculateDirectionalLight(DirLight light, vec3 normal, vec3 viewDir)
 	// specular;
 	vec3 reflectDir = reflect(-light.direction, normal);  
 
-	float specular = pow(max(dot(viewDir, reflectDir), 0.0), 32) * specularStrength;
+	float specular = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess) * specularStrength;
 
     vec3 specularLight = lightColor * specular * material.specular;
 

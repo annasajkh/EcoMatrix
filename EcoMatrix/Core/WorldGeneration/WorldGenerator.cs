@@ -1,3 +1,4 @@
+using EcoMatrix.Core.Containers;
 using EcoMatrix.Core.Utils;
 using OpenTK.Mathematics;
 
@@ -74,18 +75,55 @@ namespace EcoMatrix.Core.WorldGeneration
             return BuildChunks();
         }
 
+        public static Tuple<float[], uint[]> BuildTerrain(List<Vertex[]> allVertices)
+        {
+            List<Vertex> verticesResult = new List<Vertex>(allVertices.Count * allVertices[0].Length);
+            List<Indices> indicesResult = new List<Indices>(allVertices.Count * allVertices[0].Length / 4);
+
+            for (int i = 0; i < allVertices.Count; i++)
+            {
+                verticesResult.AddRange(allVertices[i]);
+            }
+
+            Indices[] quadIndices = new Indices[]
+            {
+                new Indices(0, 1, 3),
+                new Indices(1, 2, 3)
+            };
+
+            for (int i = 0; i < verticesResult.Count / 4; i++)
+            {
+                for (int j = 0; j < quadIndices.Length; j++)
+                {
+                    quadIndices[j].FirstIndex += (uint)(4 * i);
+                    quadIndices[j].SecondIndex += (uint)(4 * i);
+                    quadIndices[j].ThirdIndex += (uint)(4 * i);
+                }
+
+                indicesResult.AddRange(quadIndices);
+
+                quadIndices[0].FirstIndex = 0;
+                quadIndices[0].SecondIndex = 1;
+                quadIndices[0].ThirdIndex = 3;
+
+                quadIndices[1].FirstIndex = 1;
+                quadIndices[1].SecondIndex = 2;
+                quadIndices[1].ThirdIndex = 3;
+            }
+            
+            return Tuple.Create(Builders.VerticesBuilder(verticesResult.ToArray()), Builders.IndicesBuilder(indicesResult.ToArray()));
+        }
+
         private static Tuple<float[], uint[]> BuildChunks()
         {
             Global.builderTerrainVertices.Clear();
-            Global.builderTerrainIndices.Clear();
 
             for (int i = 0; i < Global.chunks.Count; i++)
             {
                 Global.builderTerrainVertices.Add(Global.chunks[i].Vertices);
-                Global.builderTerrainIndices.Add(Global.chunks[i].Indices);
             }
 
-            return Builders.BuildAll(Global.builderTerrainVertices, Global.builderTerrainIndices);
+            return BuildTerrain(Global.builderTerrainVertices);
         }
 
     }

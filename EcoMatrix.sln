@@ -3,7 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EcoMatrix", "EcoMatrix\EcoMatrix.csproj", "{D9B47C59-6D76-4CBA-983B-30CDC4152986}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcoMatrix", "EcoMatrix\EcoMatrix.csproj", "{D9B47C59-6D76-4CBA-983B-30CDC4152986}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{57D2FBB6-A163-4D72-AF1E-B0B964B78CBE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

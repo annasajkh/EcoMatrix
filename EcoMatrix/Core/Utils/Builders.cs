@@ -4,24 +4,6 @@ namespace EcoMatrix.Core.Utils
 {
     public static class Builders
     {
-        public static Tuple<float[], uint[]> BuildAll(List<Vertex[]> allVertices, List<Indices[]> allIndices)
-        {
-            List<float> verticesResult = new List<float>(allVertices.Count * allVertices[0].Length * Global.AllShaderAttributeSize);
-            List<uint> indicesResult = new List<uint>(allIndices.Count * allIndices[0].Length * 3);
-
-            for (int i = 0; i < allVertices.Count; i++)
-            {
-                verticesResult.AddRange(VerticesBuilder(allVertices[i]));
-            }
-
-            for (int i = 0; i < allIndices.Count; i++)
-            {
-                indicesResult.AddRange(IndicesBuilder(allIndices[i], (uint)(verticesResult.Count / Global.AllShaderAttributeSize / allVertices.Count * i)));
-            }
-
-            return Tuple.Create(verticesResult.ToArray(), indicesResult.ToArray());
-        }
-
         public static float[] VerticesBuilder(Vertex[] vertices)
         {
             float[] verticesResult = new float[Global.AllShaderAttributeSize * vertices.Length];
@@ -43,8 +25,8 @@ namespace EcoMatrix.Core.Utils
                 verticesResult[i + 8] = vertices[index].Normal.Y;
                 verticesResult[i + 9] = vertices[index].Normal.Z;
 
-                verticesResult[i + 10] = vertices[index].TextureCoordinates.X;
-                verticesResult[i + 11] = vertices[index].TextureCoordinates.Y;
+                verticesResult[i + 10] = vertices[index].TextureCoordinate.X;
+                verticesResult[i + 11] = vertices[index].TextureCoordinate.Y;
 
                 index++;
             }
@@ -55,7 +37,7 @@ namespace EcoMatrix.Core.Utils
         }
 
         // offset is for offsetting the indices
-        public static uint[] IndicesBuilder(Indices[] indices, uint offset = 0)
+        public static uint[] IndicesBuilder(Indices[] indices)
         {
             uint[] indicesResult = new uint[3 * indices.Length];
 
@@ -63,9 +45,9 @@ namespace EcoMatrix.Core.Utils
 
             for (int i = 0; i < indicesResult.Length; i += 3)
             {
-                indicesResult[i] = indices[index].FirstIndex + offset;
-                indicesResult[i + 1] = indices[index].SecondIndex + offset;
-                indicesResult[i + 2] = indices[index].ThirdIndex + offset;
+                indicesResult[i] = indices[index].FirstIndex;
+                indicesResult[i + 1] = indices[index].SecondIndex;
+                indicesResult[i + 2] = indices[index].ThirdIndex;
 
                 index++;
             }
