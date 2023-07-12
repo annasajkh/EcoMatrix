@@ -1,1 +1,2 @@
-my upcoming game
+# EcoMatrix
+me learning OpenGL
