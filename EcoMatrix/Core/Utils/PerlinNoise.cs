@@ -1,6 +1,6 @@
 using OpenTK.Mathematics;
 
-//perlin noise tutorial i follow https://rtouti.github.io/graphics/perlin-noise-algorithm
+// perlin noise tutorial i follow https://rtouti.github.io/graphics/perlin-noise-algorithm
 namespace EcoMatrix.Core.Utils
 {
     public class PerlinNoise
@@ -65,15 +65,15 @@ namespace EcoMatrix.Core.Utils
 
         public double Noise2D(double x, double y)
         {
-            //cap the x and y value to be between 0 - 255
+            // cap the x and y value to be between 0 - 255
             int X = (int)MathHelper.Floor(x) & 255;
             int Y = (int)MathHelper.Floor(y) & 255;
 
-            //get the double reminder
+            // get the double reminder
             double xf = (double)(x - MathHelper.Floor(x));
             double yf = (double)(y - MathHelper.Floor(y));
 
-            //construct the square
+            // construct the square
             Vector2d topRight = new Vector2d(xf - 1.0, yf - 1.0);
             Vector2d topLeft = new Vector2d(xf, yf - 1.0);
             Vector2d bottomRight = new Vector2d(xf - 1.0, yf);
