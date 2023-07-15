@@ -8,8 +8,8 @@ namespace EcoMatrix.Core.WorldGeneration
     {
         public static Tuple<float[], uint[]> GenerateAround(float x, float z)
         {
-            float centerX = Helpers.Snap(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
-            float centerZ = Helpers.Snap(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
+            float centerX = Helpers.SnapToGrid(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
+            float centerZ = Helpers.SnapToGrid(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
 
             for (int i = 0; i < Global.renderDistance; i++)
             {
@@ -30,8 +30,8 @@ namespace EcoMatrix.Core.WorldGeneration
 
         public static Tuple<float[], uint[]> UpdateAround(float x, float z)
         {
-            float centerX = Helpers.Snap(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
-            float centerZ = Helpers.Snap(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
+            float centerX = Helpers.SnapToGrid(x - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
+            float centerZ = Helpers.SnapToGrid(z - Global.chunkFullSize * Global.renderDistance / 2, Global.chunkFullSize);
 
             for (int i = 0; i < Global.renderDistance; i++)
             {

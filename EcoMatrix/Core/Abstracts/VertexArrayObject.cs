@@ -1,7 +1,6 @@
-using EcoMatrix.Core.Abstracts;
 using OpenTK.Graphics.OpenGL4;
 
-namespace EcoMatrix.Core.ArrayObjects
+namespace EcoMatrix.Core.Abstracts
 {
     public abstract class VertexArrayObject : BufferObject
     {

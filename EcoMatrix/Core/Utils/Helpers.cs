@@ -5,9 +5,9 @@ namespace EcoMatrix.Core.Utils
 {
     public static class Helpers
     {
-        public static float Snap(float value, float snapSize)
+        public static float SnapToGrid(float value, float gridSize)
         {
-            return (float)(MathHelper.Round(value / snapSize) * snapSize);
+            return (float)(MathHelper.Round(value / gridSize) * gridSize);
         }
 
         public static Color4 LerpColor(Color4 color1, Color4 color2, float t)
