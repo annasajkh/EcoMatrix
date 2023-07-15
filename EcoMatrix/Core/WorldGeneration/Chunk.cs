@@ -8,7 +8,7 @@ namespace EcoMatrix.Core.WorldGeneration
     public class Chunk
     {
         private Rectangle[,] rectangles;
-        public Vertex[] Vertices { get; private set; }
+        public Vertex[] Vertices { get; }
 
         public float X { get; private set; }
         public float Z { get; private set; }
@@ -103,25 +103,7 @@ namespace EcoMatrix.Core.WorldGeneration
                 }
             }
 
-            MergeVertices(rectangles);
-        }
-
-        private void MergeVertices(Rectangle[,] rectangles)
-        {
-            int index = 0;
-
-            for (int i = 0; i < rectangles.GetLength(0); i++)
-            {
-                for (int j = 0; j < rectangles.GetLength(1); j++)
-                {
-                    Vertices[index] = rectangles[i, j].VertexTopRight;
-                    Vertices[index + 1] = rectangles[i, j].VertexBottomRight;
-                    Vertices[index + 2] = rectangles[i, j].VertexBottomLeft;
-                    Vertices[index + 3] = rectangles[i, j].VertexTopLeft;
-
-                    index += 4;
-                }
-            }
+            Helpers.MergeVertices(Vertices, rectangles);
         }
     }
 }

@@ -11,19 +11,7 @@ namespace EcoMatrix.Core.Engine
         private Matrix4 view;
         private Matrix4 projection;
 
-        private Shader shader;
-
-        public Shader Shader
-        {
-            get
-            {
-                return shader;
-            }
-            set
-            {
-                shader = value;
-            }
-        }
+        public Shader Shader { get; set; }
 
         public Matrix4 Model
         {
@@ -60,7 +48,7 @@ namespace EcoMatrix.Core.Engine
 
         public Renderer(Shader shader)
         {
-            this.shader = shader;
+            this.Shader = shader;
 
             model = Matrix4.Identity;
             View = Matrix4.Identity;
@@ -71,15 +59,15 @@ namespace EcoMatrix.Core.Engine
         {
             Shader.Use();
 
-            GL.UniformMatrix4(shader.GetUniformLocation("uView"), false, ref view);
-            GL.UniformMatrix4(shader.GetUniformLocation("uProjection"), false, ref projection);
+            GL.UniformMatrix4(Shader.GetUniformLocation("uView"), false, ref view);
+            GL.UniformMatrix4(Shader.GetUniformLocation("uProjection"), false, ref projection);
         }
 
         public void Draw(Mesh mesh, VertexArrayObject vertexArrayObject)
         {
             model = mesh.ModelMatrix;
 
-            GL.UniformMatrix4(shader.GetUniformLocation("uModel"), false, ref model);
+            GL.UniformMatrix4(Shader.GetUniformLocation("uModel"), false, ref model);
 
             mesh.Bind();
 
@@ -97,7 +85,7 @@ namespace EcoMatrix.Core.Engine
 
         public void Dispose()
         {
-            shader.Dispose();
+            Shader.Dispose();
             GC.SuppressFinalize(this);
         }
 

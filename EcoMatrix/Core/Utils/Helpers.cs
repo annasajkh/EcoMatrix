@@ -1,4 +1,5 @@
 using EcoMatrix.Core.Containers;
+using EcoMatrix.Core.Shapes;
 using OpenTK.Mathematics;
 
 namespace EcoMatrix.Core.Utils
@@ -51,6 +52,24 @@ namespace EcoMatrix.Core.Utils
                 vertexA.Normal = crossedABAC;
                 vertexB.Normal = crossedABAC;
                 vertexC.Normal = crossedABAC;
+            }
+        }
+
+        public static void MergeVertices(Vertex[] Vertices, Rectangle[,] rectangles)
+        {
+            int index = 0;
+
+            for (int i = 0; i < rectangles.GetLength(0); i++)
+            {
+                for (int j = 0; j < rectangles.GetLength(1); j++)
+                {
+                    Vertices[index] = rectangles[i, j].VertexTopRight;
+                    Vertices[index + 1] = rectangles[i, j].VertexBottomRight;
+                    Vertices[index + 2] = rectangles[i, j].VertexBottomLeft;
+                    Vertices[index + 3] = rectangles[i, j].VertexTopLeft;
+
+                    index += 4;
+                }
             }
         }
     }

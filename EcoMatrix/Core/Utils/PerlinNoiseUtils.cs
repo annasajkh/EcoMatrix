@@ -4,7 +4,6 @@ namespace EcoMatrix.Core.Utils
 {
     public static class PerlinNoiseUtils
     {
-        //private static List<float> noises = new List<float>(Global.worldNoiseOctaves);
         private static PerlinNoise perlinNoise = new PerlinNoise((int)DateTime.Now.Ticks);
 
         public static float GetFractalNoise(float x, float y)
@@ -17,8 +16,7 @@ namespace EcoMatrix.Core.Utils
 
 			for (int i = 0; i < Global.worldNoiseOctaves; i++)
             {
-				sum += ((float)(perlinNoise.Noise2D((x / Global.worldNoiseScale) * worldNoiseLacunarity,
-													   (y / Global.worldNoiseScale) * worldNoiseLacunarity) * worldNoisePersistance));
+				sum += (float)(perlinNoise.Noise2D(x / Global.worldNoiseScale * worldNoiseLacunarity, y / Global.worldNoiseScale * worldNoiseLacunarity) * worldNoisePersistance);
 
 				maxSum += worldNoisePersistance;
 
