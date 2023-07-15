@@ -66,44 +66,37 @@ namespace EcoMatrix.Core.WorldGeneration
                 {
                     Vector3 vertexPosition = new Vector3(X + j * Global.chunkResolution, 0, Z + i * Global.chunkResolution);
 
-                    float noise1 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
+                    float[] noises = new float[4];
+                    Color4[] colors = new Color4[4];
 
-                    float noise2 = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.01f, vertexPosition.Z * 0.01f);
+                    noises[0] = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
+                    noises[1] = PerlinNoiseUtils.GetFractalNoise((vertexPosition.X + Global.chunkResolution) * 0.01f, vertexPosition.Z * 0.01f);
+                    noises[2] = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, vertexPosition.Z * 0.01f);
+                    noises[3] = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
 
-                    float noise3 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, vertexPosition.Z * 0.01f);
+                    for (int k = 0; k < 4; k++)
+                    {
+                        noises[k] = MathHelper.MapRange(noises[k], -1, 1, 0, 1);
+                        colors[k] = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noises[k]);
+                    }
 
-                    float noise4 = PerlinNoiseUtils.GetFractalNoise(vertexPosition.X * 0.01f, (vertexPosition.Z + Global.chunkResolution) * 0.01f);
-
-
-                    noise1 = MathHelper.MapRange(noise1, -1, 1, 0, 1);
-                    noise2 = MathHelper.MapRange(noise2, -1, 1, 0, 1);
-                    noise3 = MathHelper.MapRange(noise3, -1, 1, 0, 1);
-                    noise4 = MathHelper.MapRange(noise4, -1, 1, 0, 1);
-
-
-                    Color4 color1 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise1);
-                    Color4 color2 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise2);
-                    Color4 color3 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise3);
-                    Color4 color4 = Helpers.Lerp3Color(Global.terrainColors[0], Global.terrainColors[1], Global.terrainColors[2], noise4);
-
-
-                    rectangles[i, j].VertexTopRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise1 * Global.worldMaxHeight, Global.chunkResolution),
-                                                                 color1,
+                    rectangles[i, j].VertexTopRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noises[0] * Global.worldMaxHeight, Global.chunkResolution),
+                                                                 colors[0],
                                                                  new Vector3(),
                                                                  new Vector2(1f, 1f));
 
-                    rectangles[i, j].VertexBottomRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noise2 * Global.worldMaxHeight, 0),
-                                                                    color2,
+                    rectangles[i, j].VertexBottomRight.UpdateVertex(vertexPosition + new Vector3(Global.chunkResolution, noises[1] * Global.worldMaxHeight, 0),
+																	colors[1],
                                                                     new Vector3(),
                                                                     new Vector2(1f, 0f));
 
-                    rectangles[i, j].VertexBottomLeft.UpdateVertex(vertexPosition + new Vector3(0, noise3 * Global.worldMaxHeight, 0),
-                                                                   color3,
+                    rectangles[i, j].VertexBottomLeft.UpdateVertex(vertexPosition + new Vector3(0, noises[2] * Global.worldMaxHeight, 0),
+																   colors[2],
                                                                    new Vector3(),
                                                                    new Vector2(0f, 0f));
 
-                    rectangles[i, j].VertexTopLeft.UpdateVertex(vertexPosition + new Vector3(0, noise4 * Global.worldMaxHeight, Global.chunkResolution),
-                                                                color4,
+                    rectangles[i, j].VertexTopLeft.UpdateVertex(vertexPosition + new Vector3(0, noises[3] * Global.worldMaxHeight, Global.chunkResolution),
+																colors[3],
                                                                 new Vector3(),
                                                                 new Vector2(0f, 1f));
                     index++;

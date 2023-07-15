@@ -30,3 +30,35 @@ D:\Projects\C#\EcoMatrix\EcoMatrix\bin\Debug\net6.0\runtimes\win-x86\native\glfw
 D:\Projects\C#\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.csproj.CopyComplete
 D:\Projects\C#\EcoMatrix\EcoMatrix\bin\Debug\net6.0\StbImageSharp.dll
 D:\Projects\C#\EcoMatrix\EcoMatrix\bin\Debug\net6.0\CjClutter.ObjLoader.Loader.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\EcoMatrix.exe
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\EcoMatrix.deps.json
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\EcoMatrix.runtimeconfig.json
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\EcoMatrix.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\EcoMatrix.pdb
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\CjClutter.ObjLoader.Loader.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Compute.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Core.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Graphics.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Input.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Mathematics.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.OpenAL.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Windowing.Common.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Windowing.Desktop.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\OpenTK.Windowing.GraphicsLibraryFramework.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\StbImageSharp.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\runtimes\linux-x64\native\libglfw.so.3.3
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\runtimes\osx-arm64\native\libglfw.3.dylib
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\runtimes\osx-x64\native\libglfw.3.dylib
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\runtimes\win-x64\native\glfw3.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\bin\Debug\net6.0\runtimes\win-x86\native\glfw3.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.csproj.AssemblyReference.cache
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.GeneratedMSBuildEditorConfig.editorconfig
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.AssemblyInfoInputs.cache
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.AssemblyInfo.cs
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.csproj.CoreCompileInputs.cache
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.csproj.CopyComplete
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\refint\EcoMatrix.dll
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.pdb
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\EcoMatrix.genruntimeconfig.cache
+D:\Project\Visual Studio 2022\_Clones\EcoMatrix\EcoMatrix\obj\Debug\net6.0\ref\EcoMatrix.dll
