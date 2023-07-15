@@ -36,7 +36,6 @@ namespace EcoMatrix.Core.Utils
 
         }
 
-        // offset is for offsetting the indices
         public static uint[] IndicesBuilder(Indices[] indices)
         {
             uint[] indicesResult = new uint[3 * indices.Length];

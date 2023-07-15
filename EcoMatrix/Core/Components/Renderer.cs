@@ -1,4 +1,4 @@
-using EcoMatrix.Core.ArrayObjects;
+using EcoMatrix.Core.Abstracts;
 using EcoMatrix.Core.Components;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
